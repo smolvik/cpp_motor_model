@@ -1,8 +1,21 @@
 #ifndef __GEOMETRY_H__
 #define __GEOMETRY_H__
 
+#include <math.h>
 #include <cmath>
 #include <vector>
+
+#include <float.h>
+
+static inline bool isdzero(double a)
+{
+	if (abs(a) <= DBL_EPSILON * abs(a)){
+        return true;
+    }
+    return false;
+}
+
+static inline int sign(double x){return (x<0.0)?-1:1;}
 
 struct Vec3d{
 	double x,y,z;	
@@ -35,6 +48,16 @@ class quadrature_trapez{
 		xp = x;
 		return a;
 	}
+	
+	double operator() (double x, bool fs){
+		double d = (dt/2)*(x + xp);
+		xp = x;
+
+		if(fs) if( ((a>0)&&(d>0))||((a<0)&&(d<0)) ) d = 0.0;
+
+		a += d;
+		return a;
+	}	
 };
 
 #endif //__GEOMETRY_H__

@@ -4,6 +4,7 @@
 #include "config.h"
 #include "geometry.h"
 #include "motor.h"
+#include "reducer.h"
 
 using namespace std;    
 
@@ -66,12 +67,13 @@ class Plotter{
 	Plotter(const Vec3d &x, const double &t) : x0(x), t0(t) {}
 	void operator() (const Vec3d &x, const double t){
 		//cout << t << '\t' << x.x << '\t' << x.y <<'\t' << x.z << endl;
+
+		double sc[3] = {50000,1,0.2};
+		double st = 1000;
 		
-		double sc = 1;
-		
-		line(t0*1000, width/2 + x0.x*sc, t*1000, width/2 + x.x*sc, red);
-		line(t0*1000, width/2 + x0.y*sc, t*1000, width/2 + x.y*sc, green);
-		line(t0*1000, width/2 + x0.z*sc, t*1000, width/2 + x.z*sc, blue);
+		line(t0*st, width/2 + x0.x*sc[0], t*st, width/2 + x.x*sc[0], red);
+		line(t0*st, width/2 + x0.y*sc[1], t*st, width/2 + x.y*sc[1], green);
+		line(t0*st, width/2 + x0.z*sc[2], t*st, width/2 + x.z*sc[2], blue);
 		
 		x0 = x;
 		t0 = t;
@@ -105,18 +107,41 @@ int main(int argc, char **argv)
 	double dt = 1e-5;
 	Vec3d st(0.0, 0.0, 0.0);
 	Plotter plot(st, 0.0);
-	Motor motor(dt);
+	
+	MotorReducer motor(dt);
+	Reducer reducer(dt);	
+	exciter vex(10, 50);
+	double speed = 0.0;
 
+    for( double t=0.0 ; t<10.0 ; t+= dt ){
+		vex(t);
+		speed = reducer(motor(vex.v, speed));
+		
+		//plot(motor.getstate(), t);
+		plot(reducer.getstate(), t);
+	}	
+
+	/* 
+	Reducer reducer(dt);
+	double Mdv = 10;	
+	for( double t=0.0 ; t<0.1 ; t+= dt ){
+		reducer.update(Mdv);
+		plot(reducer.getstate(), t);
+	}
+	*/
+	
+	/*
+	Motor motor(dt);
 	exciter vex(27, 30);
 	double Mn = 0.6;
 
     for( double t=0.0 ; t<1.0 ; t+= dt ){
 		vex(t);
-		motor.update(vex.v, Mn);
+		motor(vex.v, Mn);
 		
 		plot(motor.getstate(), t);
-		//plot(i_abc,t);
 	}
+	*/
 
 	image.flip_vertically(); // i want to have the origin at the left bottom corner of the image
 	image.write_tga_file("output.tga");		

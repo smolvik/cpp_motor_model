@@ -7,6 +7,7 @@
 
 class Motor{
 	
+protected:
 	quadrature_trapez *quad_ele;
 	quadrature_trapez *quad_mex;
 	quadrature_trapez *quad_rot;	
@@ -23,10 +24,17 @@ class Motor{
 public:
 	Motor(double dt);
 	~Motor();
-	void update(const Vec3d &vex, double load);
+	//void update(const Vec3d &vex, double load);
+	double operator ()(const Vec3d &vex, double load);
 	Vec3d getstate();
 	Vec3d getcurr();
 	
+};
+
+class MotorReducer : public Motor{
+public:
+	MotorReducer(double dt) : Motor(dt) {};
+	double operator ()(const Vec3d &vex, double speed);
 };
 
 #endif

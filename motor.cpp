@@ -1,4 +1,5 @@
 #include "motor.h"
+#include <iostream>
 
 Motor::Motor(double t)
 {
@@ -23,7 +24,7 @@ Motor::~Motor()
 	delete quad_rot;
 }
 
-void Motor::update(const Vec3d &vex, double load)
+double Motor::operator ()(const Vec3d &vex, double load)
 {
 	Vec3d tmp = Vec3d(sin(position*NPOL), sin(position*NPOL-2*M_PI/3), sin(position*NPOL+2*M_PI/3))*NPOL*PSIMAX;
 	didt_abc = (tmp*speed + vex - i_abc*RDRV)*(1/LDRV);
@@ -33,8 +34,11 @@ void Motor::update(const Vec3d &vex, double load)
 	
 	acceleration = (torque-load)/JDRV;
 	speed = (*quad_mex)(acceleration);
-	position = (*quad_rot)(speed);	
+	position = (*quad_rot)(speed);
 	
+	return torque;
+	
+	//std::cout<<"Motor"<<std::endl;
 }
 
 Vec3d Motor::getstate()
@@ -45,4 +49,18 @@ Vec3d Motor::getstate()
 Vec3d Motor::getcurr()
 {
 	return i_abc;
+}
+
+double MotorReducer::operator ()(const Vec3d &vex, double speed)
+{
+	Vec3d tmp = Vec3d(sin(position*NPOL), sin(position*NPOL-2*M_PI/3), sin(position*NPOL+2*M_PI/3))*NPOL*PSIMAX;
+	didt_abc = (tmp*speed + vex - i_abc*RDRV)*(1/LDRV);
+	i_abc = Vec3d (quad_ele[0](didt_abc.x), quad_ele[1](didt_abc.y), quad_ele[2](didt_abc.z));
+
+	torque = i_abc*tmp*-1;
+	position = (*quad_rot)(speed);	
+	
+	return torque;
+	
+	//std::cout<<"MotorReducer"<<std::endl;
 }
