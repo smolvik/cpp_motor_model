@@ -26,4 +26,6 @@ const double M_MEX = 9.887;
 const double F_STRN = 480.0;
 const double K_VTRN = 640.0;
 
+const double X_MAX = 23;
+
 #endif

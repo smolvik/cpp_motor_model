@@ -30,15 +30,13 @@ double Motor::operator ()(const Vec3d &vex, double load)
 	didt_abc = (tmp*speed + vex - i_abc*RDRV)*(1/LDRV);
 	i_abc = Vec3d (quad_ele[0](didt_abc.x), quad_ele[1](didt_abc.y), quad_ele[2](didt_abc.z));
 
-	torque = i_abc*tmp*-1;
+	torque = i_abc*tmp*(-1);
 	
 	acceleration = (torque-load)/JDRV;
 	speed = (*quad_mex)(acceleration);
 	position = (*quad_rot)(speed);
 	
 	return torque;
-	
-	//std::cout<<"Motor"<<std::endl;
 }
 
 Vec3d Motor::getstate()
@@ -51,16 +49,21 @@ Vec3d Motor::getcurr()
 	return i_abc;
 }
 
+uint32_t Motor::encoder()
+{
+	double rem = fmod(position, 360.0);
+	if(rem<0) rem += 360;
+	return 4095*(uint32_t)rem/359;
+}
+
 double MotorReducer::operator ()(const Vec3d &vex, double speed)
 {
 	Vec3d tmp = Vec3d(sin(position*NPOL), sin(position*NPOL-2*M_PI/3), sin(position*NPOL+2*M_PI/3))*NPOL*PSIMAX;
 	didt_abc = (tmp*speed + vex - i_abc*RDRV)*(1/LDRV);
 	i_abc = Vec3d (quad_ele[0](didt_abc.x), quad_ele[1](didt_abc.y), quad_ele[2](didt_abc.z));
 
-	torque = i_abc*tmp*-1;
+	torque = i_abc*tmp*(-1);
 	position = (*quad_rot)(speed);	
 	
 	return torque;
-	
-	//std::cout<<"MotorReducer"<<std::endl;
 }

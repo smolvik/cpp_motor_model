@@ -3,7 +3,7 @@
 
 #include "config.h"
 #include "geometry.h"
-
+#include <stdint.h>
 
 class Reducer{
 	
@@ -37,6 +37,8 @@ public:
 	double get_Mct_dv();
 	double get_Dh12();
 	double get_etha_r();
+	
+	int32_t linsensor();
 	
 };
 

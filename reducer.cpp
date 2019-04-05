@@ -116,3 +116,11 @@ Vec3d Reducer::getstate()
 {
 	return Vec3d(xpos, w_dv, Fn);
 }
+
+int32_t Reducer::linsensor()
+{
+	int32_t x = 2048*(uint32_t)xpos/X_MAX;
+	if(x>2048) x = 2048; 
+	else if(x<-2048) x = -2048;
+	return x;
+}

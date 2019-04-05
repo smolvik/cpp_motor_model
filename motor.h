@@ -3,6 +3,7 @@
 
 #include "config.h"
 #include "geometry.h"
+#include <stdint.h>
 
 
 class Motor{
@@ -24,10 +25,10 @@ protected:
 public:
 	Motor(double dt);
 	~Motor();
-	//void update(const Vec3d &vex, double load);
 	double operator ()(const Vec3d &vex, double load);
 	Vec3d getstate();
 	Vec3d getcurr();
+	uint32_t encoder();
 	
 };
 
