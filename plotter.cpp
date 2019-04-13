@@ -12,6 +12,13 @@ Plotter::Plotter(const std::string fn, const double xsc, const Vec3d ysc)
 	
 	image = new TGAImage(width, height, TGAImage::RGB);
 	
+	for(int i =0; i <= height; i += height/10){
+		//line(0, i, width, i, TGAColor(255, 255, 255, 0));
+		for(int j = 0; j < width; j+=10){
+			image->set(j, i, TGAColor(255, 255, 255, 0));
+			image->set(i, j, TGAColor(255, 255, 255, 0));
+		}
+	}
 	
 }
 
@@ -73,7 +80,7 @@ void Plotter::operator() (const Vec3d &y, const double x){
 	line(x0*xscale, width/2 + y0.x*yscale.x, x*xscale, width/2 + y.x*yscale.x, red);
 	line(x0*xscale, width/2 + y0.y*yscale.y, x*xscale, width/2 + y.y*yscale.y, green);
 	line(x0*xscale, width/2 + y0.z*yscale.z, x*xscale, width/2 + y.z*yscale.z, blue);
-
+	
 	y0 = y;
 	x0 = x;
 }

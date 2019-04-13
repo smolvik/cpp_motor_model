@@ -114,7 +114,7 @@ double Reducer::operator ()(double Mdv)
 
 Vec3d Reducer::getstate()
 {
-	return Vec3d(xpos, w_dv, Fn);
+	return Vec3d(xpos, dxdt, Fn);
 }
 
 int32_t Reducer::linsensor()

@@ -1,5 +1,4 @@
 #include "motor.h"
-#include <iostream>
 
 Motor::Motor(double t)
 {
@@ -51,19 +50,21 @@ Vec3d Motor::getcurr()
 
 uint32_t Motor::encoder()
 {
-	double rem = fmod(position, 360.0);
+	double rem = fmod(position*360.0/(2*M_PI), 360.0);
 	if(rem<0) rem += 360;
-	return 4095*(uint32_t)rem/359;
+	return (uint32_t)4095*(rem/360);
 }
 
-double MotorReducer::operator ()(const Vec3d &vex, double speed)
+double MotorReducer::operator ()(const Vec3d &vex, double spd)
 {
 	Vec3d tmp = Vec3d(sin(position*NPOL), sin(position*NPOL-2*M_PI/3), sin(position*NPOL+2*M_PI/3))*NPOL*PSIMAX;
-	didt_abc = (tmp*speed + vex - i_abc*RDRV)*(1/LDRV);
+	didt_abc = (tmp*spd + vex - i_abc*RDRV)*(1/LDRV);
 	i_abc = Vec3d (quad_ele[0](didt_abc.x), quad_ele[1](didt_abc.y), quad_ele[2](didt_abc.z));
 
 	torque = i_abc*tmp*(-1);
-	position = (*quad_rot)(speed);	
-	
+	position = (*quad_rot)(spd);	
+
+	speed = spd;
+
 	return torque;
 }

@@ -38,6 +38,12 @@ public:
 	double get_Dh12();
 	double get_etha_r();
 	
+	friend std::ostream& operator<<(std::ostream& s, Reducer& r)
+	{
+		s << r.xpos << ":" << r.dxdt << ":" << r.Fn << std::endl;
+		return s;
+	}	
+	
 	int32_t linsensor();
 	
 };
