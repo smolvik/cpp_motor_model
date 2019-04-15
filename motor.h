@@ -31,7 +31,7 @@ public:
 	double operator ()(const Vec3d &vex, double load);
 	Vec3d getstate();
 	Vec3d getcurr();
-	uint32_t encoder();
+
 	friend std::ostream& operator<<(std::ostream& s, Motor& m)
 	{
 		s << m.position << ":" << m.speed << ":" << m.acceleration << std::endl;

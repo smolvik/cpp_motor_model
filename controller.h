@@ -196,6 +196,18 @@ class VectorController{
 		return y;
 	}
 	
+	int32_t adcposin(double u)
+	{
+		double kadc = 4095.0/3.3;
+		double u1 = (-u*0.15+1.6);
+		int32_t x = (int32_t)(u1*kadc);
+
+		if(x < 0) x = 0;
+		if(x > 4095) x = 4095;
+		
+		return -(71015*x-34423*4096)/4096;
+	}	
+	
 	double pwmout(int32_t x)
 	{
 		const double Umax = 57.0;
@@ -207,6 +219,13 @@ class VectorController{
 		return y;
 	}	
 	
+	uint32_t encoder(double phi)
+	{
+		double rem = fmod(phi*360.0/(2*M_PI), 360.0);
+		if(rem<0) rem += 360;
+		return (uint32_t)4095*(rem/360);
+	}	
+
 	Regulator *dreg;
 	Regulator *qreg;
 	Regulator *sreg;
@@ -256,8 +275,9 @@ public:
 		delete preg;		
 	}
 
-	Vec3d operator ()(int32_t code, double refpos, Vec3d iabc)
+	Vec3d operator ()(double phi, double refpos, Vec3d iabc)
 	{		
+		int32_t code = encoder(phi);
 		phase = (0+code) & (1024-1);
 
 		// convert abc currents to dq
@@ -277,7 +297,7 @@ public:
 			int32_t speed = tacho(code);
 
 			/* position regulator */
-			int32_t pe = refpos - tacho.position();
+			int32_t pe = adcposin(refpos) - tacho.position();
 			(*preg)(pe, fPosSat);
 			refspeed = preg->y>>12;
 			//std::cout << tacho.position() << std::endl;

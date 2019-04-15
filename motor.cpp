@@ -48,13 +48,6 @@ Vec3d Motor::getcurr()
 	return i_abc;
 }
 
-uint32_t Motor::encoder()
-{
-	double rem = fmod(position*360.0/(2*M_PI), 360.0);
-	if(rem<0) rem += 360;
-	return (uint32_t)4095*(rem/360);
-}
-
 double MotorReducer::operator ()(const Vec3d &vex, double spd)
 {
 	Vec3d tmp = Vec3d(sin(position*NPOL), sin(position*NPOL-2*M_PI/3), sin(position*NPOL+2*M_PI/3))*NPOL*PSIMAX;
