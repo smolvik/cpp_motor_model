@@ -3,22 +3,19 @@ CPPFLAGS     = -g -O0
 LDFLAGS      = 	
 LIBS         = -lm
 
-DESTDIR = ./
-TARGET  = main
+all: ac tr
 
-OBJECTS := $(patsubst %.cpp,%.o,$(wildcard *.cpp))
+ac: plotter.o tgaimage.o ac.cpp
+	$(SYSCONF_LINK) -Wall $(LDFLAGS) -o $@ plotter.o tgaimage.o ac.cpp $(LIBS)
 
-all: $(DESTDIR)$(TARGET)
+tr: plotter.o tgaimage.o tr.cpp
+	$(SYSCONF_LINK) -Wall $(LDFLAGS) -o $@ plotter.o tgaimage.o tr.cpp $(LIBS)
 
-$(DESTDIR)$(TARGET): $(OBJECTS)
-	$(SYSCONF_LINK) -Wall $(LDFLAGS) -o $(DESTDIR)$(TARGET) $(OBJECTS) $(LIBS)
-
-$(OBJECTS): %.o: %.cpp
+plotter.o: plotter.cpp
 	$(SYSCONF_LINK) -Wall $(CPPFLAGS) -c $(CFLAGS) $< -o $@
-
+	
+tgaimage.o: tgaimage.cpp
+	$(SYSCONF_LINK) -Wall $(CPPFLAGS) -c $(CFLAGS) $< -o $@	
 
 clean:
-	-rm -f $(OBJECTS)
-	-rm -f $(TARGET)
-	-rm -f *.tga
-
+	-rm -f *.tga *.o tr ac

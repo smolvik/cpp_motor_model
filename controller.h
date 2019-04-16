@@ -231,6 +231,9 @@ class VectorController{
 	Regulator *sreg;
 	Regulator *preg;
 	
+	RejFilter *rflt1;
+	RejFilter *rflt2;
+	
 	double curr_mag;
 	double curr_ang;
 	
@@ -255,6 +258,9 @@ public:
 		qreg = new Regulator {KI_DQCUR, KP_DQCUR};	
 		sreg = new Regulator {KI_SPD, KP_SPD};	
 		preg = new Regulator {KI_POS, KP_POS};
+		
+		rflt1 = new RejFilter {RF_A12, RF_A13, RF_B11, RF_B12, RF_B13};
+		rflt2 = new RejFilter {RF_A22, RF_A23, RF_B21, RF_B22, RF_B23};
 
 		fCurSat = 0;
 		fSpdSat = 0;
@@ -272,7 +278,10 @@ public:
 		delete dreg;
 		delete qreg;
 		delete sreg;
-		delete preg;		
+		delete preg;	
+		
+		delete rflt1;
+		delete rflt2;
 	}
 
 	Vec3d operator ()(double phi, double refpos, Vec3d iabc)
@@ -296,8 +305,12 @@ public:
 			//phase = (phase+3) & 1023;
 			int32_t speed = tacho(code);
 
-			/* position regulator */
-			int32_t pe = adcposin(refpos) - tacho.position();
+			/* position regulator */	
+			int32_t xrp = adcposin(refpos);
+			xrp = (*rflt1)(xrp);
+			xrp = (*rflt2)(xrp);
+			
+			int32_t pe = xrp - tacho.position();
 			(*preg)(pe, fPosSat);
 			refspeed = preg->y>>12;
 			//std::cout << tacho.position() << std::endl;
@@ -306,6 +319,7 @@ public:
 			if(refspeed > MAXSPEED) {refspeed = MAXSPEED; fPosSat = 1;}
 			if(refspeed < -MAXSPEED) {refspeed = -MAXSPEED; fPosSat = 1;}			
 			//refspeed = refpos;
+			//refspeed = 1000;
 						
 			int32_t se = refspeed - speed;			
 
@@ -320,6 +334,7 @@ public:
 		}
 
 		//qref = adcin(refpos);
+		//qref = 1000;
 
 		// get the errors
 		int32_t ed = 0 - dq[0];
