@@ -1,0 +1,78 @@
+\hypertarget{classReducer}{}\section{Класс Reducer}
+\label{classReducer}\index{Reducer@{Reducer}}
+
+
+Класс линейного редуктора  
+
+
+
+
+{\ttfamily \#include $<$reducer.\+h$>$}
+
+\subsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classReducer_aef34e959e4ee8b88409b550245caf460}{Reducer} (double t)
+\item 
+double \hyperlink{classReducer_a2ba34bd1a838b483352560f568251a17}{operator()} (double Mdv)
+\begin{DoxyCompactList}\small\item\em обновляет состояние \end{DoxyCompactList}\item 
+\hyperlink{structVec3}{Vec3d} \hyperlink{classReducer_a758fff1ae35351c70fdbefec4b796105}{getstate} ()
+\end{DoxyCompactItemize}
+\subsection*{Друзья}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classReducer_ad45359cd93ad74e5957c630e8d559bda}\label{classReducer_ad45359cd93ad74e5957c630e8d559bda}} 
+std\+::ostream \& {\bfseries operator$<$$<$} (std\+::ostream \&s, \hyperlink{classReducer}{Reducer} \&r)
+\end{DoxyCompactItemize}
+
+
+\subsection{Подробное описание}
+Класс линейного редуктора 
+
+\subsection{Конструктор(ы)}
+\mbox{\Hypertarget{classReducer_aef34e959e4ee8b88409b550245caf460}\label{classReducer_aef34e959e4ee8b88409b550245caf460}} 
+\index{Reducer@{Reducer}!Reducer@{Reducer}}
+\index{Reducer@{Reducer}!Reducer@{Reducer}}
+\subsubsection{\texorpdfstring{Reducer()}{Reducer()}}
+{\footnotesize\ttfamily Reducer\+::\+Reducer (\begin{DoxyParamCaption}\item[{double}]{t }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+\begin{DoxyParams}{Аргументы}
+{\em t} & шаг интегрирования \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Методы}
+\mbox{\Hypertarget{classReducer_a758fff1ae35351c70fdbefec4b796105}\label{classReducer_a758fff1ae35351c70fdbefec4b796105}} 
+\index{Reducer@{Reducer}!getstate@{getstate}}
+\index{getstate@{getstate}!Reducer@{Reducer}}
+\subsubsection{\texorpdfstring{getstate()}{getstate()}}
+{\footnotesize\ttfamily \hyperlink{structVec3}{Vec3d} Reducer\+::getstate (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\begin{DoxyReturn}{Возвращает}
+вектор состояния редуктора (положение м, скорость м/с, усилие на штоке Н) 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classReducer_a2ba34bd1a838b483352560f568251a17}\label{classReducer_a2ba34bd1a838b483352560f568251a17}} 
+\index{Reducer@{Reducer}!operator()@{operator()}}
+\index{operator()@{operator()}!Reducer@{Reducer}}
+\subsubsection{\texorpdfstring{operator()()}{operator()()}}
+{\footnotesize\ttfamily double Reducer\+::operator() (\begin{DoxyParamCaption}\item[{double}]{Mdv }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+обновляет состояние 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em Mdv} & момент выдаваемый двигателем Н$\ast$м \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+угловая скорость вращения ротора рад/c 
+\end{DoxyReturn}
+
+
+Объявления и описания членов класса находятся в файле\+:\begin{DoxyCompactItemize}
+\item 
+reducer.\+h\end{DoxyCompactItemize}

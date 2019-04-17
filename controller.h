@@ -7,6 +7,10 @@
 #include "regulator.h"
 #include "delayer.h"
 
+/**
+ * @brief
+ * Класс векторного контроллера
+ */
 class VectorController{
 
 	/* dot product for 3d vectors */
@@ -210,11 +214,10 @@ class VectorController{
 	
 	double pwmout(int32_t x)
 	{
-		const double Umax = 57.0;
-		double y = x*Umax/1024.0;
+		double y = x*UPWR/1024.0;
 		
-		if(y > Umax/2) y = Umax/2;
-		if(y < -Umax/2) y = -Umax/2;
+		if(y > UPWR/2) y = UPWR/2;
+		if(y < -UPWR/2) y = -UPWR/2;
 		
 		return y;
 	}	
@@ -283,7 +286,13 @@ public:
 		delete rflt1;
 		delete rflt2;
 	}
-
+	/**
+	 * @brief обновляет сотояние
+	 * @param phi угловое положение ротора рад
+	 * @param refpos напряжение уставки контура положения В
+	 * @param iabc фазные токи статора А
+	 * @return вектор фазных напряжений статора В
+	 */
 	Vec3d operator ()(double phi, double refpos, Vec3d iabc)
 	{		
 		int32_t code = encoder(phi);
@@ -307,16 +316,19 @@ public:
 
 			/* position regulator */	
 			int32_t xrp = adcposin(refpos);
+
+#ifdef CFG_CORFLTEN
 			xrp = (*rflt1)(xrp);
 			xrp = (*rflt2)(xrp);
-			
+#endif
+
 			xrp = -(71015*xrp-34423*4096)/4096;
 
-			std::cout << adcposin(refpos) << ":" << xrp << std::endl;
-			
+			//std::cout << adcposin(refpos) << ":" << xrp << std::endl;
+
 			int32_t pe = xrp - tacho.position();
-			(*preg)(pe, fPosSat);
-			refspeed = preg->y>>12;
+			refspeed = (*preg)(pe, fPosSat) >> 12;
+
 			//std::cout << tacho.position() << std::endl;
 
 			fPosSat = 0;
@@ -324,14 +336,12 @@ public:
 			if(refspeed < -MAXSPEED) {refspeed = -MAXSPEED; fPosSat = 1;}			
 			//refspeed = refpos;
 			//refspeed = 1000;
-						
+
 			int32_t se = refspeed - speed;			
 
 			/* speed regulator */
-			(*sreg)(se, fSpdSat);
-			
-			qref = sreg->y>>12;
-			
+			qref = (*sreg)(se, fSpdSat) >> 12;
+
 			fSpdSat = 0;
 			if(qref > maxqcurrent) {qref = maxqcurrent; fSpdSat = 1;}
 			if(qref < -maxqcurrent) {qref = -maxqcurrent; fSpdSat = 1;}			
@@ -345,11 +355,8 @@ public:
 		int32_t eq = qref - dq[1];
 
 		// currents regulators do its work
-		(*dreg)(ed, fCurSat);
-		(*qreg)(eq, fCurSat);
-
-		dq[0] = dreg->y>>2;
-		dq[1] = qreg->y>>2;
+		dq[0] = (*dreg)(ed, fCurSat) >> 2;
+		dq[1] = (*qreg)(eq, fCurSat) >> 2;
 
 		//std::cout << dq[0] << ":" << dq[1] << std::endl;
 
@@ -365,45 +372,3 @@ public:
 		return Vec3d(pwmout(abc[0]), pwmout(abc[1]), pwmout(abc[2]));
 	}
 };
-
-/*
-int32_t lerr_filter(int32_t x)
-{
-	static int32_t j = 0;
-	static int32_t a = 0;
-	static int32_t b[256];
-	
-	j = (j+1)&(256-1);
-	a = a-b[j]+x;
-	b[j] = x;
-	
-	return a;
-}
-
-int32_t lpos_filter(int32_t x)
-{
-	static int32_t j = 0;
-	static int32_t a = 0;
-	static int32_t b[16];
-	
-	j = (j+1)&(16-1);
-	a = a-b[j]+x;
-	b[j] = x;
-	
-	return a>>4;
-}
-
-int32_t prefilter(int32_t xk)
-{
-	const int32_t a2 = 958;
-	const int32_t b1 = 66;
-	static int32_t yk1 = 0;
-	int32_t yk = 0;
-	
-	yk = b1*xk + ((a2*yk1)>>10);
-	yk1 = yk;
-	
-	return yk >> 10;
-}
-
-*/

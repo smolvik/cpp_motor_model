@@ -5,6 +5,11 @@
 #include "geometry.h"
 #include <stdint.h>
 
+/**
+ * @brief
+ * Класс линейного редуктора
+ */
+
 class Reducer{
 	
 	double dt;
@@ -26,75 +31,7 @@ class Reducer{
 	quadrature_trapez *quad_x;
 	quadrature_trapez *quad_h1;
 	quadrature_trapez *quad_h12;
-		
-public:
-	Reducer(double t)
-	{
-		dt = t;
 
-		xpos = 0.0;
-		Mupr = 0.0;
-		w_dv = 0.0;
-		Fupr = 0.0;
-		h12 = 0.0;
-		DH12 = 0.0;
-		Mct_dv_m = 0.0;
-		Fct_n_m = 0.0;
-		Mct_dv = 0.0;
-		dh12dt = 0.0;
-		Mupr = 0.0;		
-		Fn = 0.0;
-		dxdt = 0.0;
-		
-		quad_w_dv = new quadrature_trapez {dt};	
-		quad_dx = new quadrature_trapez {dt};	
-		quad_x = new quadrature_trapez {dt};	
-		quad_h1 = new quadrature_trapez {dt};	
-		quad_h12 = new quadrature_trapez {dt};	
-	}	
-
-	~Reducer()
-	{
-		delete quad_w_dv;
-		delete quad_dx;
-		delete quad_x;
-		delete quad_h1;
-		delete quad_h12;
-	}	
-
-	double operator ()(double Mdv)
-	{
-		Mupr = Fupr*I_RED/get_etha_r();
-		Mct_dv = get_Mct_dv();
-		Mct_dv_m = get_Mct_dv_m(Mdv-Mupr);
-		w_dv = (*quad_w_dv)(Mdv-Mupr-Mct_dv_m-K_VTRDV*w_dv)/(JDRV+J_REDPRIV);
-		
-		Fct_n_m = get_Fct_n_m(Fupr-Fn, dxdt);
-		
-		dxdt = (*quad_dx)((Fupr-Fn-Fct_n_m-dxdt*K_VTRN))/M_MEX;
-		xpos = (*quad_x)(dxdt);
-		Fn = K_N*xpos;
-
-		double dx1dt = w_dv*I_RED;	
-		double dh1dt = dx1dt-dxdt;
-		double h1 = (*quad_h1)(dh1dt);	
-		double Fupr1 = h1*C_RED+dh1dt*B_RED;
-
-		DH12 = dh1dt + (h1-h12)*C_RED/B_RED;
-
-		h12 = (*quad_h12)(DH12,(abs(h12)>=(DELTA_RED/2)));
-
-		dh12dt = get_Dh12();
-		double Fupr12 = h12*C_RED + dh12dt*B_RED;
-		
-		Fupr = Fupr1 - Fupr12;	
-		
-		return w_dv;
-	}
-	
-	
-	Vec3d getstate() {return Vec3d(xpos, dxdt, Fn);}
-	
 	double get_Mct_dv_m(double M)
 	{
 		double ret = 0.0; 
@@ -141,7 +78,82 @@ public:
 		else ret = 1/ETHA_TORM;
 		
 		return ret;
-	}		
+	}	
+		
+public:
+	/**@param t шаг интегрирования */
+	Reducer(double t)
+	{
+		dt = t;
+
+		xpos = 0.0;
+		Mupr = 0.0;
+		w_dv = 0.0;
+		Fupr = 0.0;
+		h12 = 0.0;
+		DH12 = 0.0;
+		Mct_dv_m = 0.0;
+		Fct_n_m = 0.0;
+		Mct_dv = 0.0;
+		dh12dt = 0.0;
+		Mupr = 0.0;		
+		Fn = 0.0;
+		dxdt = 0.0;
+		
+		quad_w_dv = new quadrature_trapez {dt};	
+		quad_dx = new quadrature_trapez {dt};	
+		quad_x = new quadrature_trapez {dt};	
+		quad_h1 = new quadrature_trapez {dt};	
+		quad_h12 = new quadrature_trapez {dt};	
+	}	
+
+	~Reducer()
+	{
+		delete quad_w_dv;
+		delete quad_dx;
+		delete quad_x;
+		delete quad_h1;
+		delete quad_h12;
+	}	
+	/**
+	 * @brief обновляет состояние
+	 * @param Mdv момент выдаваемый двигателем Н*м
+	 * @return угловая скорость вращения ротора рад/c
+	 * 
+	 */
+	double operator ()(double Mdv)
+	{
+		Mupr = Fupr*I_RED/get_etha_r();
+		Mct_dv = get_Mct_dv();
+		Mct_dv_m = get_Mct_dv_m(Mdv-Mupr);
+		w_dv = (*quad_w_dv)(Mdv-Mupr-Mct_dv_m-K_VTRDV*w_dv)/(JDRV+J_REDPRIV);
+		
+		Fct_n_m = get_Fct_n_m(Fupr-Fn, dxdt);
+		
+		dxdt = (*quad_dx)((Fupr-Fn-Fct_n_m-dxdt*K_VTRN))/M_MEX;
+		xpos = (*quad_x)(dxdt);
+		Fn = K_N*xpos;
+
+		double dx1dt = w_dv*I_RED;	
+		double dh1dt = dx1dt-dxdt;
+		double h1 = (*quad_h1)(dh1dt);	
+		double Fupr1 = h1*C_RED+dh1dt*B_RED;
+
+		DH12 = dh1dt + (h1-h12)*C_RED/B_RED;
+
+		h12 = (*quad_h12)(DH12,(abs(h12)>=(DELTA_RED/2)));
+
+		dh12dt = get_Dh12();
+		double Fupr12 = h12*C_RED + dh12dt*B_RED;
+		
+		Fupr = Fupr1 - Fupr12;	
+		
+		return w_dv;
+	}	
+	/**
+	 * @return вектор состояния редуктора (положение м, скорость м/с, усилие на штоке Н)
+	 */
+	Vec3d getstate() {return Vec3d(xpos, dxdt, Fn);}
 	
 	friend std::ostream& operator<<(std::ostream& s, Reducer& r)
 	{
@@ -149,15 +161,5 @@ public:
 		return s;
 	}	
 };
-
-/*
-int32_t Reducer::linsensor()
-{
-	int32_t x = 2048*(uint32_t)xpos/X_MAX;
-	if(x>2048) x = 2048; 
-	else if(x<-2048) x = -2048;
-	return x;
-}
-*/
 
 #endif

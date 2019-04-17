@@ -1,0 +1,101 @@
+\hypertarget{classTGAImage}{}\section{Класс T\+G\+A\+Image}
+\label{classTGAImage}\index{T\+G\+A\+Image@{T\+G\+A\+Image}}
+
+
+Класс для работы с tga изображениями  
+
+
+
+
+{\ttfamily \#include $<$tgaimage.\+h$>$}
+
+\subsection*{Открытые типы}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classTGAImage_acd41e9399e944e4d5dbc3d4e8dbe199d}\label{classTGAImage_acd41e9399e944e4d5dbc3d4e8dbe199d}} 
+enum {\bfseries Format} \{ {\bfseries G\+R\+A\+Y\+S\+C\+A\+LE} =1, 
+{\bfseries R\+GB} =3, 
+{\bfseries R\+G\+BA} =4
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classTGAImage_a71c89ee2f760f68af17e79d9839f2670}\label{classTGAImage_a71c89ee2f760f68af17e79d9839f2670}} 
+{\bfseries T\+G\+A\+Image} (int w, int h, int bpp)
+\item 
+\mbox{\Hypertarget{classTGAImage_ace9b4199c62051cb5735288c0a74d866}\label{classTGAImage_ace9b4199c62051cb5735288c0a74d866}} 
+{\bfseries T\+G\+A\+Image} (const \hyperlink{classTGAImage}{T\+G\+A\+Image} \&img)
+\item 
+\mbox{\Hypertarget{classTGAImage_a4ebada0ee5a84be6296966a8db5ec556}\label{classTGAImage_a4ebada0ee5a84be6296966a8db5ec556}} 
+bool {\bfseries read\+\_\+tga\+\_\+file} (const char $\ast$filename)
+\item 
+\mbox{\Hypertarget{classTGAImage_a8659d0255565e0fb2180a78c5830c85c}\label{classTGAImage_a8659d0255565e0fb2180a78c5830c85c}} 
+bool {\bfseries write\+\_\+tga\+\_\+file} (const char $\ast$filename, bool rle=true)
+\item 
+\mbox{\Hypertarget{classTGAImage_a44ea3b7c3cbae84ec9d6ea47c52889fe}\label{classTGAImage_a44ea3b7c3cbae84ec9d6ea47c52889fe}} 
+bool {\bfseries flip\+\_\+horizontally} ()
+\item 
+\mbox{\Hypertarget{classTGAImage_a0634a35dcfe7c378c1bf9f1797573180}\label{classTGAImage_a0634a35dcfe7c378c1bf9f1797573180}} 
+bool {\bfseries flip\+\_\+vertically} ()
+\item 
+\mbox{\Hypertarget{classTGAImage_a578165f9de10f95d882cd490b4f3634f}\label{classTGAImage_a578165f9de10f95d882cd490b4f3634f}} 
+bool {\bfseries scale} (int w, int h)
+\item 
+\mbox{\Hypertarget{classTGAImage_a42b47f4e9e8fbaf577fd9e826d00e011}\label{classTGAImage_a42b47f4e9e8fbaf577fd9e826d00e011}} 
+\hyperlink{structTGAColor}{T\+G\+A\+Color} {\bfseries get} (int x, int y)
+\item 
+\mbox{\Hypertarget{classTGAImage_a34d702eee32a232e4c07fca0b35a2a48}\label{classTGAImage_a34d702eee32a232e4c07fca0b35a2a48}} 
+bool {\bfseries set} (int x, int y, \hyperlink{structTGAColor}{T\+G\+A\+Color} c)
+\item 
+\mbox{\Hypertarget{classTGAImage_ad8e1f89de9fe4908f9a326f9a579c0b1}\label{classTGAImage_ad8e1f89de9fe4908f9a326f9a579c0b1}} 
+\hyperlink{classTGAImage}{T\+G\+A\+Image} \& {\bfseries operator=} (const \hyperlink{classTGAImage}{T\+G\+A\+Image} \&img)
+\item 
+\mbox{\Hypertarget{classTGAImage_a7f4fc3ed4681794265dda9de40901c4c}\label{classTGAImage_a7f4fc3ed4681794265dda9de40901c4c}} 
+int {\bfseries get\+\_\+width} ()
+\item 
+\mbox{\Hypertarget{classTGAImage_ace38afffc9190e587ae4131f9e8eff75}\label{classTGAImage_ace38afffc9190e587ae4131f9e8eff75}} 
+int {\bfseries get\+\_\+height} ()
+\item 
+\mbox{\Hypertarget{classTGAImage_a76fe0fa4c0f07325df8cb03b4776f6ed}\label{classTGAImage_a76fe0fa4c0f07325df8cb03b4776f6ed}} 
+int {\bfseries get\+\_\+bytespp} ()
+\item 
+\mbox{\Hypertarget{classTGAImage_aed4bdaf93999de486033d0c897882c67}\label{classTGAImage_aed4bdaf93999de486033d0c897882c67}} 
+unsigned char $\ast$ {\bfseries buffer} ()
+\item 
+\mbox{\Hypertarget{classTGAImage_a9aa8fa984ac190303063ce3ef794555e}\label{classTGAImage_a9aa8fa984ac190303063ce3ef794555e}} 
+void {\bfseries clear} ()
+\end{DoxyCompactItemize}
+\subsection*{Защищенные члены}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classTGAImage_af39d7d3946ce82d0ef57fcea86a993ea}\label{classTGAImage_af39d7d3946ce82d0ef57fcea86a993ea}} 
+bool {\bfseries load\+\_\+rle\+\_\+data} (std\+::ifstream \&in)
+\item 
+\mbox{\Hypertarget{classTGAImage_a5fbef3f9c83b957197f23f0f1b321efc}\label{classTGAImage_a5fbef3f9c83b957197f23f0f1b321efc}} 
+bool {\bfseries unload\+\_\+rle\+\_\+data} (std\+::ofstream \&out)
+\end{DoxyCompactItemize}
+\subsection*{Защищенные данные}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classTGAImage_afd06806bae721d61ae49a600ef26e6d1}\label{classTGAImage_afd06806bae721d61ae49a600ef26e6d1}} 
+unsigned char $\ast$ {\bfseries data}
+\item 
+\mbox{\Hypertarget{classTGAImage_aeff3ad848265a0963558565c4cd3ff7c}\label{classTGAImage_aeff3ad848265a0963558565c4cd3ff7c}} 
+int {\bfseries width}
+\item 
+\mbox{\Hypertarget{classTGAImage_acc1d453f77bf82c48c9cef8e111a7ecf}\label{classTGAImage_acc1d453f77bf82c48c9cef8e111a7ecf}} 
+int {\bfseries height}
+\item 
+\mbox{\Hypertarget{classTGAImage_a3bc2a6c8a3907fd7905ea3eb04271aca}\label{classTGAImage_a3bc2a6c8a3907fd7905ea3eb04271aca}} 
+int {\bfseries bytespp}
+\end{DoxyCompactItemize}
+
+
+\subsection{Подробное описание}
+Класс для работы с tga изображениями 
+
+Объявления и описания членов классов находятся в файлах\+:\begin{DoxyCompactItemize}
+\item 
+tgaimage.\+h\item 
+tgaimage.\+cpp\end{DoxyCompactItemize}

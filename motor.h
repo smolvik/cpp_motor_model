@@ -7,25 +7,39 @@
 #include "delayer.h"
 #include <iostream>
 
+/**
+ * @brief
+ * Класс синхронного электродвигателя 
+ */
 class Motor{
 	
 protected:
+	/**@private*/	
 	quadrature_trapez *quad_ele;
+	/**@private*/
 	quadrature_trapez *quad_mex;
+	/**@private*/
 	quadrature_trapez *quad_rot;	
 	
+	/**@private*/	
 	double acceleration;
+	/**@private*/
 	double speed;
+	/**@private*/
 	double position;
+	/**@private*/
 	double torque;
+	/**@private*/
 	double dt;
-		
+	/**@private*/	
 	Vec3d i_abc;
+	/**@private*/
 	Vec3d didt_abc;	
-	
+	/**@private*/
 	Delayer<double> *encdel;
 	
 public:
+	/**@param t шаг интегрирования */
 	Motor(double t)
 	{
 		i_abc = Vec3d(0.0, 0.0, 0.0);
@@ -48,7 +62,12 @@ public:
 		delete quad_mex;
 		delete quad_rot;
 	}
-
+	/**
+	 * @brief обновляет состояние
+	 * @param vex вектор фазных напряжений
+	 * @param load нагружающий момент Н*м
+	 * @return момент развиваемый двигателем
+	 */
 	double operator ()(const Vec3d &vex, double load)
 	{
 		Vec3d tmp = Vec3d(sin(position*NPOL), sin(position*NPOL-2*M_PI/3), sin(position*NPOL+2*M_PI/3))*NPOL*PSIMAX;
@@ -64,23 +83,39 @@ public:
 		return torque;
 	}
 
+	/**@return вектор состояния двигателя (угловое положение ротора рад, угловая скорость рад/c, ускорение рад/c2)*/
 	Vec3d getstate() {return Vec3d(position, speed, acceleration);}
+	/**@return вектор фазных токов А*/
 	Vec3d getcurr() {return i_abc;}
+	/**@return угловая скорость рад/с*/
+	double getspd() {return speed;}
+	/**@return угловое положение ротора рад*/
+	double getpos() {return position;}
+	/**@return момент развиваемый двигателем Н*м*/
+	double gettorque() {return torque;}
 
 	friend std::ostream& operator<<(std::ostream& s, Motor& m)
 	{
 		s << m.position << ":" << m.speed << ":" << m.acceleration << std::endl;
 		return s;
-	}
-	
-	double getspd() {return speed;}
-	double getpos() {return position;}
-	double gettorque() {return torque;}
+	}	
 };
 
+/**
+ * @brief
+ * Класс синхронного электродвигателя для использования с редуктором
+ */
 class MotorReducer : public Motor{
 public:
+	/**@param t шаг интегрирования */
 	MotorReducer(double dt) : Motor(dt) {};
+	
+	/**
+	 * @brief обновляет состояние
+	 * @param vex вектор фазных напряжений
+	 * @param spd угловая скорость ротора рад/c
+	 * @return момент развиваемый двигателем
+	 */	
 	double operator ()(const Vec3d &vex, double spd)
 	{
 		Vec3d tmp = Vec3d(sin(position*NPOL), sin(position*NPOL-2*M_PI/3), sin(position*NPOL+2*M_PI/3))*NPOL*PSIMAX;

@@ -1,0 +1,81 @@
+\hypertarget{classMotorReducer}{}\section{Класс Motor\+Reducer}
+\label{classMotorReducer}\index{Motor\+Reducer@{Motor\+Reducer}}
+
+
+Класс синхронного электродвигателя для использования с редуктором  
+
+
+
+
+{\ttfamily \#include $<$motor.\+h$>$}
+
+
+
+Граф наследования\+:Motor\+Reducer\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=158pt]{classMotorReducer__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Граф связей класса Motor\+Reducer\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=158pt]{classMotorReducer__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classMotorReducer_a85ac4fe9831900c6697ee80ff0cc3d32}{Motor\+Reducer} (double dt)
+\item 
+double \hyperlink{classMotorReducer_a29141a375c33d409928f40962fcd4011}{operator()} (const \hyperlink{structVec3}{Vec3d} \&vex, double spd)
+\begin{DoxyCompactList}\small\item\em обновляет состояние \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Подробное описание}
+Класс синхронного электродвигателя для использования с редуктором 
+
+\subsection{Конструктор(ы)}
+\mbox{\Hypertarget{classMotorReducer_a85ac4fe9831900c6697ee80ff0cc3d32}\label{classMotorReducer_a85ac4fe9831900c6697ee80ff0cc3d32}} 
+\index{Motor\+Reducer@{Motor\+Reducer}!Motor\+Reducer@{Motor\+Reducer}}
+\index{Motor\+Reducer@{Motor\+Reducer}!Motor\+Reducer@{Motor\+Reducer}}
+\subsubsection{\texorpdfstring{Motor\+Reducer()}{MotorReducer()}}
+{\footnotesize\ttfamily Motor\+Reducer\+::\+Motor\+Reducer (\begin{DoxyParamCaption}\item[{double}]{dt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+\begin{DoxyParams}{Аргументы}
+{\em t} & шаг интегрирования \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Методы}
+\mbox{\Hypertarget{classMotorReducer_a29141a375c33d409928f40962fcd4011}\label{classMotorReducer_a29141a375c33d409928f40962fcd4011}} 
+\index{Motor\+Reducer@{Motor\+Reducer}!operator()@{operator()}}
+\index{operator()@{operator()}!Motor\+Reducer@{Motor\+Reducer}}
+\subsubsection{\texorpdfstring{operator()()}{operator()()}}
+{\footnotesize\ttfamily double Motor\+Reducer\+::operator() (\begin{DoxyParamCaption}\item[{const \hyperlink{structVec3}{Vec3d} \&}]{vex,  }\item[{double}]{spd }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+обновляет состояние 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em vex} & вектор фазных напряжений \\
+\hline
+{\em spd} & угловая скорость ротора рад/c \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+момент развиваемый двигателем 
+\end{DoxyReturn}
+
+
+Объявления и описания членов класса находятся в файле\+:\begin{DoxyCompactItemize}
+\item 
+motor.\+h\end{DoxyCompactItemize}

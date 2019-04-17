@@ -1,6 +1,9 @@
 #ifndef __TACHOMETER_H__
 #define __TACHOMETER_H__
-
+/**
+ * @brief
+ * Класс измерителя скорости вращения ротора
+ */
 class Tachometer{
 	
 	int32_t enc1;
@@ -15,7 +18,11 @@ public:
 		spd = 0;
 		pos = 0;
 	}
-	
+	/**
+	 * @brief обновляет состояние измерителя
+	 * @param code 12 разр. код с энкодера 
+	 * @return скорость вращения ротора об/мин
+	 */	
 	int32_t operator ()(int32_t code){
 			
 		int32_t denc;
@@ -34,12 +41,13 @@ public:
 		spd = (denc*rate)>>13;
 		return spd;
 	}
-	
+	/**@return текущее положение ротора в условных угловых еденицах */
 	int32_t position()
 	{
 		return pos>>1;
 	}
 	
+	/**@return скорость вращения ротора об/мин */
 	int32_t speed()
 	{
 		return spd;

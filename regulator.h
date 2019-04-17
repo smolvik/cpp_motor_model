@@ -1,13 +1,21 @@
 #ifndef __REGULATOR_H__
 #define __REGULATOR_H__
 
-struct Regulator{
+/**
+ * @brief
+ * Класс ПИ регулятора
+ */
+class Regulator{
 	int32_t ki;
 	int32_t kp;
 	int32_t a;
 	int32_t y;		
 	
-public:	
+public:
+	/**
+	 * @param _ki интегральный коэффициент
+	 * @param _kp пропорциональный коэффициент
+	 */
 	Regulator(int32_t _ki, int32_t _kp)
 	{
 		ki = _ki;
@@ -16,7 +24,13 @@ public:
 		y = 0;
 	}
 
-	void operator ()(int32_t e, int32_t fs)
+	/**
+	 * @brief обновляет состояние
+	 * @param e ошибка
+	 * @param fs флаг насыщения
+	 * @return выходное значение регулятора
+	 */
+	int32_t operator ()(int32_t e, int32_t fs)
 	{
 		int32_t d = ki*e;
 		
@@ -26,7 +40,8 @@ public:
 		a += d;
 		y = e*kp + a;
 		a = a;		
-
+		
+		return y;
 	}
 };
 

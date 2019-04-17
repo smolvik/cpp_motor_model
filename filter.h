@@ -20,6 +20,10 @@
 #define RF_SHIFTA 10
 #define RF_SHIFTB 18
 
+/**
+ * @brief
+ * Класс цифрового усредняющего фильтра
+ */
 class MeanFilter{
 	int32_t *wnd;
 	int32_t order;
@@ -45,6 +49,10 @@ public:
 	}	
 };
 
+/**
+ * @brief
+ * Класс цифрового режекторнорго фильтра
+ */
 class RejFilter{
 	int32_t x1;
 	int32_t x2;

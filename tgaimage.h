@@ -2,7 +2,10 @@
 #define __IMAGE_H__
 
 #include <fstream>
-
+/**
+ * @brief
+ * Класс для работы с tga изображениями
+ */
 #pragma pack(push,1)
 struct TGA_Header {
 	char idlength;
@@ -21,7 +24,10 @@ struct TGA_Header {
 #pragma pack(pop)
 
 
-
+/**
+ * @brief
+ * Класс для работы с tga изображениями
+ */
 struct TGAColor {
 	union {
 		struct {
@@ -59,7 +65,10 @@ struct TGAColor {
 	}
 };
 
-
+/**
+ * @brief
+ * Класс для работы с tga изображениями
+ */
 class TGAImage {
 protected:
 	unsigned char* data;

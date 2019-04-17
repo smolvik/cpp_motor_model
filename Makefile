@@ -22,5 +22,8 @@ plotter.o: plotter.cpp $(HEADERS)
 tgaimage.o: tgaimage.cpp $(HEADERS)
 	$(SYSCONF_LINK) -Wall $(CPPFLAGS) -c $(CFLAGS) $< -o $@	
 
+doc:
+	doxygen
+
 clean:
 	-rm -f *.tga *.o tr ac

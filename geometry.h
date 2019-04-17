@@ -19,18 +19,27 @@ static inline bool isdzero(double a)
 
 static inline int sign(double x){return (x<0.0)?-1:1;}
 
+/**
+ * @brief
+ * Класс 3D вектора
+ */
 template<class T>
 struct Vec3{
 	T x,y,z;	
 	
 	Vec3() : x(0), y(0), z(0) {}
 	Vec3(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
-	
+	/** @brief Векторное произведение двух векторов */
     Vec3 	operator ^(const Vec3 &v) const { return Vec3(y*v.z-z*v.y, z*v.x-x*v.z, x*v.y-y*v.x); }
+    /** @brief Сложение двух векторов */
     Vec3 	operator +(const Vec3 &v) const { return Vec3(x+v.x, y+v.y, z+v.z); }
+    /** @brief Вычитание двух векторов */
     Vec3 	operator -(const Vec3 &v) const { return Vec3(x-v.x, y-v.y, z-v.z); }
+    /** @brief Масштабирование вектора */
     Vec3 	operator *(T f)       const { return Vec3(x*f, y*f, z*f); }
+    /** @brief Скалярное произведение двух векторов */
     T	operator *(const Vec3 &v) const { return x*v.x + y*v.y + z*v.z; }
+    /** @brief Длина вектора */
     T norm () const { return std::sqrt(x*x+y*y+z*z); }
 	T& operator[](const int i) { return i<=0 ? x : (1==i ? y : z); }
 	friend std::ostream& operator<<(std::ostream& s, Vec3& v){s<<v.x<<":"<<v.y<<":"<<v.z; return s;}
@@ -39,24 +48,10 @@ struct Vec3{
 typedef Vec3<int32_t> Vec3i;
 typedef Vec3<double> Vec3d;	
 
-/*
-struct Vec3d{
-	double x,y,z;	
-	
-	Vec3d() : x(0), y(0), z(0) {}
-	Vec3d(double _x, double _y, double _z) : x(_x), y(_y), z(_z) {}
-	
-    Vec3d 	operator ^(const Vec3d &v) const { return Vec3d(y*v.z-z*v.y, z*v.x-x*v.z, x*v.y-y*v.x); }
-    Vec3d 	operator +(const Vec3d &v) const { return Vec3d(x+v.x, y+v.y, z+v.z); }
-    Vec3d 	operator -(const Vec3d &v) const { return Vec3d(x-v.x, y-v.y, z-v.z); }
-    Vec3d 	operator *(double f)       const { return Vec3d(x*f, y*f, z*f); }
-    double	operator *(const Vec3d &v) const { return x*v.x + y*v.y + z*v.z; }
-    double norm () const { return std::sqrt(x*x+y*y+z*z); }
-	double& operator[](const int i) { return i<=0 ? x : (1==i ? y : z); }
-	friend std::ostream& operator<<(std::ostream& s, Vec3d& v){s<<v.x<<":"<<v.y<<":"<<v.z; return s;}
-};
-*/
-
+/**
+ * @brief
+ * Класс численного вычисления квадратур методом трапеций
+ */
 class quadrature_trapez{
 	double a;
 	double xp;

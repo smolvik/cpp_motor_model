@@ -1,6 +1,10 @@
 #ifndef __DELAYER_H__
 #define __DELAYER_H__
 
+/**
+ * @brief
+ * Класс линии задержки
+ */
 template <class t> class Delayer {
 	t *wnd;
 	int sz;
@@ -15,6 +19,12 @@ public:
 		delete[] wnd;
 	}
 	
+	/**
+	 * @brief обновляет состояние
+	 * @param x текущее значение элемента 
+	 * @return элемент задержанный на n тактов
+	 * 
+	*/
 	t operator ()(t x){
 		t ret = wnd[idx];
 		wnd[idx] = x;

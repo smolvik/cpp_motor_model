@@ -1,0 +1,49 @@
+\hypertarget{classVectorController}{}\section{Класс Vector\+Controller}
+\label{classVectorController}\index{Vector\+Controller@{Vector\+Controller}}
+
+
+Класс векторного контроллера  
+
+
+
+
+{\ttfamily \#include $<$controller.\+h$>$}
+
+\subsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{structVec3}{Vec3d} \hyperlink{classVectorController_a1ec5293a94bd834736e5c6fbf293dbb8}{operator()} (double phi, double refpos, \hyperlink{structVec3}{Vec3d} iabc)
+\begin{DoxyCompactList}\small\item\em обновляет сотояние \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Подробное описание}
+Класс векторного контроллера 
+
+\subsection{Методы}
+\mbox{\Hypertarget{classVectorController_a1ec5293a94bd834736e5c6fbf293dbb8}\label{classVectorController_a1ec5293a94bd834736e5c6fbf293dbb8}} 
+\index{Vector\+Controller@{Vector\+Controller}!operator()@{operator()}}
+\index{operator()@{operator()}!Vector\+Controller@{Vector\+Controller}}
+\subsubsection{\texorpdfstring{operator()()}{operator()()}}
+{\footnotesize\ttfamily \hyperlink{structVec3}{Vec3d} Vector\+Controller\+::operator() (\begin{DoxyParamCaption}\item[{double}]{phi,  }\item[{double}]{refpos,  }\item[{\hyperlink{structVec3}{Vec3d}}]{iabc }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+обновляет сотояние 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em phi} & угловое положение ротора рад \\
+\hline
+{\em refpos} & напряжение уставки контура положения В \\
+\hline
+{\em iabc} & фазные токи статора А \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Возвращает}
+вектор фазных напряжений статора В 
+\end{DoxyReturn}
+
+
+Объявления и описания членов класса находятся в файле\+:\begin{DoxyCompactItemize}
+\item 
+controller.\+h\end{DoxyCompactItemize}

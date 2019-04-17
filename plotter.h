@@ -8,6 +8,10 @@
 #include <string>
 #include "geometry.h"
 
+/**
+ * @brief
+ * Класс построителя 2D диаграмм
+ */
 class Plotter{
 	Vec3d y0;
 	double x0;

@@ -14,16 +14,16 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-	double dt = 40e-6;
+	double dt = 4e-6;
 	double tmax = 1;
 	int fex = 10;
-	double aex = 1;
+	double aex = 0.1;
 	double klin = 1.57/1000;
-	
-	if(argc < 2) return 0;
-	
-	fex = atoi(argv[1]);
-	
+
+	if(argc < 3) return 0;
+
+	aex = atof(argv[1]);
+	fex = atof(argv[2]);
 
 	Driver driver(dt);
 
