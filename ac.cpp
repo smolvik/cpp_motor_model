@@ -14,7 +14,7 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-	double dt = 4e-6;
+	double dt = 40e-6;
 	double tmax = 1;
 	int fex = 10;
 	double aex = 1;

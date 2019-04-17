@@ -14,9 +14,13 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-	double dt = 4e-6;
-	double tmax = 0.5;
+	double dt = 40e-6;
+	double tmax = 1;
 	double klin = 1.57/1000;
+	double aex = 0.0;
+	
+	if(argc < 2) return 0;	
+	aex = atof(argv[1]);
 
 	Driver driver(dt);
 
@@ -26,7 +30,7 @@ int main(int argc, char **argv)
 
 	for( double t=0.0 ; t<tmax ; t+= dt ){		
 		//double v1 = (t<0.2)?10:0;
-		double v1 = 10;
+		double v1 = aex;
 		Vec3d vs = driver(v1);
 		
 		//cout << vs  << endl;

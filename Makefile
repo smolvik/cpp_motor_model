@@ -5,16 +5,21 @@ LIBS         = -lm
 
 all: ac tr
 
-ac: plotter.o tgaimage.o ac.cpp
+HEADERS := $(wildcard *.h)
+
+tst:
+	 @echo $(HEADERS)
+
+ac: plotter.o tgaimage.o ac.cpp $(HEADERS)
 	$(SYSCONF_LINK) -Wall $(LDFLAGS) -o $@ plotter.o tgaimage.o ac.cpp $(LIBS)
 
-tr: plotter.o tgaimage.o tr.cpp
+tr: plotter.o tgaimage.o tr.cpp $(HEADERS)
 	$(SYSCONF_LINK) -Wall $(LDFLAGS) -o $@ plotter.o tgaimage.o tr.cpp $(LIBS)
 
-plotter.o: plotter.cpp
+plotter.o: plotter.cpp $(HEADERS)
 	$(SYSCONF_LINK) -Wall $(CPPFLAGS) -c $(CFLAGS) $< -o $@
 	
-tgaimage.o: tgaimage.cpp
+tgaimage.o: tgaimage.cpp $(HEADERS)
 	$(SYSCONF_LINK) -Wall $(CPPFLAGS) -c $(CFLAGS) $< -o $@	
 
 clean:

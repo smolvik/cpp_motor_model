@@ -205,7 +205,7 @@ class VectorController{
 		if(x < 0) x = 0;
 		if(x > 4095) x = 4095;
 		
-		return -(71015*x-34423*4096)/4096;
+		return x; //-(71015*x-34423*4096)/4096;
 	}	
 	
 	double pwmout(int32_t x)
@@ -293,7 +293,7 @@ public:
 		int32_t abc[3];
 		int32_t dq[2];
 		int32_t refspeed = 0;
-		
+
 		abc[0] = adc_curin(iabc.x);
 		abc[1] = adc_curin(iabc.y);
 		abc[2] = adc_curin(iabc.z);
@@ -309,6 +309,10 @@ public:
 			int32_t xrp = adcposin(refpos);
 			xrp = (*rflt1)(xrp);
 			xrp = (*rflt2)(xrp);
+			
+			xrp = -(71015*xrp-34423*4096)/4096;
+
+			std::cout << adcposin(refpos) << ":" << xrp << std::endl;
 			
 			int32_t pe = xrp - tacho.position();
 			(*preg)(pe, fPosSat);

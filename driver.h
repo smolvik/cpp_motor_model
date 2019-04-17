@@ -27,6 +27,8 @@ class Driver{
 	double speed;
 	Vec3d vabc;
 	
+	int32_t ns;
+	
 public:
 
 	MotorReducer *motor;	
@@ -39,15 +41,16 @@ public:
 		dt = _dt;
 		speed = 0.0;
 		vabc = Vec3d(0.0, 0.0, 0.0);
-		
+		ns = (int32_t)(40e-6/dt);
+
 		reducer = new Reducer {dt};
 		motor = new MotorReducer {dt};
 		controller = new VectorController;
-		
-		mcu_delv = new Delayer<Vec3d> {5};
-		mcu_deli = new Delayer<Vec3d> {3};
-		enc_delayer = new Delayer<double> {4};
-		pos_delayer = new Delayer<double> {3};
+
+		mcu_delv = new Delayer<Vec3d> {1}; //5
+		mcu_deli = new Delayer<Vec3d> {1}; //3
+		enc_delayer = new Delayer<double> {1}; //4
+		pos_delayer = new Delayer<double> {1}; //3
 	}
 
 	~Driver(){
@@ -68,7 +71,7 @@ public:
 		double del_pos = (*pos_delayer)(ux);
 
 		/* 40 us sampler */
-		if(0==(ccnt++%10)) (vabc = (*controller)(del_phi, del_pos, del_iabc));		
+		if(0==(ccnt++%ns)) (vabc = (*controller)(del_phi, del_pos, del_iabc));		
 		
 		return reducer->getstate();
 	}

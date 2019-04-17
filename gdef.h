@@ -18,8 +18,8 @@
 //#define KP_SPD 4000
 
 /* Параметры регулятора положения */
-#define KI_POS 0
-#define KP_POS 10000
+#define KI_POS 50
+#define KP_POS 13000
 //#define KP_POS 6000
 
 #define MAXQCURRENT 2000
