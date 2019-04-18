@@ -1,17 +1,23 @@
 #include <iostream>
 #include <math.h>
 #include "tgaimage.h"
-#include "config.h"
 #include "geometry.h"
 #include "plotter.h"
-#include "filter.h"
 #include <stdint.h>
-#include <cmath> 
-#include <complex>
 #include "driver.h"
+
+/** @file 
+ * Пример использования класса Driver.
+ * Симуляция отработки приводом перекладки
+ * 
+ * */
 
 using namespace std;    
 
+/**
+ * @param напряжение уставки В
+ * @return максимальная скорость мм/с
+ */
 int main(int argc, char **argv)
 {
 	double dt = 4e-6;

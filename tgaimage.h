@@ -4,7 +4,7 @@
 #include <fstream>
 /**
  * @brief
- * Класс для работы с tga изображениями
+ * Для работы с tga изображениями
  */
 #pragma pack(push,1)
 struct TGA_Header {
@@ -26,7 +26,7 @@ struct TGA_Header {
 
 /**
  * @brief
- * Класс для работы с tga изображениями
+ * Для работы с tga изображениями
  */
 struct TGAColor {
 	union {
@@ -67,7 +67,7 @@ struct TGAColor {
 
 /**
  * @brief
- * Класс для работы с tga изображениями
+ * Для работы с tga изображениями
  */
 class TGAImage {
 protected:

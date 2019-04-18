@@ -3,7 +3,7 @@
 
 /**
  * @brief
- * Класс ПИ регулятора
+ * ПИ регулятор
  */
 class Regulator{
 	int32_t ki;

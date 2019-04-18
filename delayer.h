@@ -3,7 +3,7 @@
 
 /**
  * @brief
- * Класс линии задержки
+ * Линия задержки
  */
 template <class t> class Delayer {
 	t *wnd;

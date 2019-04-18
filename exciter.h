@@ -1,8 +1,9 @@
 #ifndef __EXCITER_H__
 #define __EXCITER_H__
+
 /**
  * @brief
- * Класс трехфазного источника напряжения
+ * Трехфазный источник напряжения
  */
 class Exciter{
 	double amp;

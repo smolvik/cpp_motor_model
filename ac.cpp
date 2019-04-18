@@ -10,8 +10,19 @@
 #include <complex>
 #include "driver.h"
 
+/** @file 
+ * Пример использования класса Driver.
+ * Симуляция отработки гармонического воздействия
+ * и частотный анализ первой гармоники
+ * */
+
 using namespace std;    
 
+/**
+ * @param амплитуда В
+ * @param частота Гц
+ * @return частота Гц, АЧХ дБ, ФЧХ градус
+ */
 int main(int argc, char **argv)
 {
 	double dt = 4e-6;

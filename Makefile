@@ -3,7 +3,7 @@ CPPFLAGS     = -g -O0
 LDFLAGS      = 	
 LIBS         = -lm
 
-all: ac tr
+all: ac tr 
 
 HEADERS := $(wildcard *.h)
 

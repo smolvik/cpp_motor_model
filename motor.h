@@ -9,7 +9,8 @@
 
 /**
  * @brief
- * Класс синхронного электродвигателя 
+ * Синхронный электродвигатель
+ * с постоянными магнитами
  */
 class Motor{
 	
@@ -19,8 +20,7 @@ protected:
 	/**@private*/
 	quadrature_trapez *quad_mex;
 	/**@private*/
-	quadrature_trapez *quad_rot;	
-	
+	quadrature_trapez *quad_rot;
 	/**@private*/	
 	double acceleration;
 	/**@private*/
@@ -103,7 +103,9 @@ public:
 
 /**
  * @brief
- * Класс синхронного электродвигателя для использования с редуктором
+ * Синхронный электродвигатель
+ * с постоянными магнитами
+ * для использования с редуктором
  */
 class MotorReducer : public Motor{
 public:

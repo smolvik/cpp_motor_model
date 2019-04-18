@@ -14,10 +14,11 @@
 #include <stdint.h>
 #include <cmath> 
 #include "delayer.h" 
+#include "fosys.h" 
 
 /**
  * @brief
- * Класс одногоканального привода
+ * Одногоканальный привод
  */
 class Driver{
 
@@ -25,6 +26,8 @@ class Driver{
 	Delayer<Vec3d> *mcu_deli;	
 	Delayer<double> *enc_delayer;
 	Delayer<double> *pos_delayer;	
+	
+	fosys *uposrc;
 
 	int ccnt;
 	double dt;
@@ -40,7 +43,10 @@ class Driver{
 public:
 
 	
-	/** @param _dt Шаг интегрирования */
+	/**
+	 * @param _dt Шаг интегрирования 
+	 * 
+	 * */
 	Driver(double _dt)
 	{
 		ccnt = 0;		
@@ -52,6 +58,7 @@ public:
 		reducer = new Reducer {dt};
 		motor = new MotorReducer {dt};
 		controller = new VectorController;
+		uposrc = new fosys {20e3*0.01e-6, dt};
 
 		mcu_delv = new Delayer<Vec3d> {5}; //20us
 		mcu_deli = new Delayer<Vec3d> {3}; //12us
@@ -67,8 +74,12 @@ public:
 		delete pos_delayer;
 		delete enc_delayer;
 		delete controller;
+		delete uposrc;
 	}
-	/**@param ux напряжение уставки регулятора положения -10В..+10В
+	
+	/**
+	 * @brief обновляет состояние
+	 * @param ux напряжение уставки регулятора положения -10В..+10В
 	 * @return вектор состояния - (положение м, скорость м/с, усилие на штоке Н)
 	 */
 	Vec3d operator () (double ux)
@@ -77,7 +88,7 @@ public:
 		speed = (*reducer)((*motor)((*mcu_delv)(vabc), speed));
 		double del_phi = (*enc_delayer)((*motor).getpos());
 		Vec3d del_iabc = (*mcu_deli)((*motor).getcurr());
-		double del_pos = (*pos_delayer)(ux);
+		double del_pos = (*pos_delayer)((*uposrc)(ux));
 
 		/*
 		speed = (*reducer)((*motor)(vabc, speed));

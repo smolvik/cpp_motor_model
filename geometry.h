@@ -21,7 +21,7 @@ static inline int sign(double x){return (x<0.0)?-1:1;}
 
 /**
  * @brief
- * Класс 3D вектора
+ * 3D вектор
  */
 template<class T>
 struct Vec3{
@@ -50,7 +50,7 @@ typedef Vec3<double> Vec3d;
 
 /**
  * @brief
- * Класс численного вычисления квадратур методом трапеций
+ * Численный вычислитель квадратур методом трапеций
  */
 class quadrature_trapez{
 	double a;
@@ -62,13 +62,18 @@ class quadrature_trapez{
 		a = 0.0; 
 		xp = 0.0;
 	}
-	
+	/**
+	 * @brief интегрирование
+	 */
 	double operator() (double x){
 		a += (dt/2)*(x + xp);
 		xp = x;
 		return a;
 	}
 	
+	/**
+	 * @brief интегрирование с насыщением
+	 */	
 	double operator() (double x, bool fs){
 		double d = (dt/2)*(x + xp);
 		xp = x;
