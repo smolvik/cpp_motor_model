@@ -3,7 +3,7 @@
 #include "tgaimage.h"
 #include "config.h"
 #include "geometry.h"
-#include "plotter.h"
+#include "tgaplotter.h"
 #include "filter.h"
 #include <stdint.h>
 #include <cmath> 
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 
 	double spdmax = 0.0;
 	
-	Plotter plot5("sin.tga", tmax,Vec3d(0.01,0.01,10000));
+	TGAPlotter plot5("sin.tga", tmax,Vec3d(0.01,0.01,10000));
 
 	complex<double> arg = 0;
 	complex<double> c1(0.0, 0.0);
