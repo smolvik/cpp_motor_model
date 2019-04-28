@@ -5,14 +5,43 @@
 #include <sys/time.h>
 #include "driver.h"
 
+using namespace std;
+
+class Oscilloscope
+{
+	XPlotter *plotter;
+	
+public:	
+	Oscilloscope(double tmax, double xmin, double xmax)
+	{
+		PlotterParams params;	
+		params.setplparam("BITMAPSIZE", (char*)"400x300");
+		params.setplparam("USE_DOUBLE_BUFFERING", (char*)"yes");		
+		
+		plotter = new XPlotter {cin, cout, cerr, params};
+		plotter->openpl();
+		
+		plotter->fspace(0.0, xmin, tmax, xmax);
+		plotter->flinewidth(0.01);    
+		plotter->pencolorname("green");
+		plotter->bgcolorname("black");
+		plotter->erase();
+	}
+	
+	~Oscilloscope()
+	{
+		delete plotter;
+	}
+
+
+};
+
 double get_ticks()
 {
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
 	return tv.tv_sec*1.0 + tv.tv_usec*1e-6;
 }
-
-using namespace std;
 
 int wndsz = 0;
 double *wndbuf;
@@ -53,8 +82,8 @@ void update_screen(int j, XPlotter &plotter, double dt)
 int main ()
 {
 	double dtsim = 4e-6;
-	double tmax = 2;
-	double freq = 2;
+	double tmax = 1;
+	double freq = 1;
 	int nskip = 100;
 	wndsz = tmax/dtsim/nskip;
 	
@@ -88,11 +117,12 @@ int main ()
 	int wi = 0;
 	int loop = 0;
 	double vex = 0.0;
+	int fscr = 0;
 
 	while(1)
 	{
 		while(get_ticks() > tsim){
-			vex = 3*cos(2*M_PI*freq*tsim);
+			vex = 3*sin(2*M_PI*freq*tsim);
 			//double vex = sign(cos(2*M_PI*freq*tsim));
 			Vec3d vs = driver(vex);
 
@@ -103,11 +133,15 @@ int main ()
 				wndbuf[wi] = 1000*vs.x;	// get mm		
 				wi = (wi+1)%wndsz;			
 				loop = 0;
+				fscr = 1;
 			}
 			
 		}
 		
-		if(loop == 0) update_screen(wi, plotter, dtsim*nskip);
+		if(fscr){
+			fscr = 0;
+			update_screen(wi, plotter, dtsim*nskip);
+		 }
 
 	}	
 	
