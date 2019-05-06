@@ -1,5 +1,5 @@
 SYSCONF_LINK = g++
-CPPFLAGS     = -g -O0
+CPPFLAGS     = -Wall -g -O0
 LDFLAGS      = 	
 LIBS         = -lm
 
@@ -11,7 +11,7 @@ tst:
 	 @echo $(HEADERS)
 
 sim: sim.cpp $(HEADERS)
-	$(SYSCONF_LINK) -o sim sim.cpp -lplotter -lXaw -lXmu -lXt -lSM -lICE -lXext -lX11 -lpng -lz -lm
+	$(SYSCONF_LINK) $(CPPFLAGS) -o sim sim.cpp -lplotter -lXaw -lXmu -lXt -lSM -lICE -lXext -lX11 -lpng -lz -lm -lpthread
 
 ac: tgaplotter.o tgaimage.o ac.cpp $(HEADERS)
 	$(SYSCONF_LINK) -Wall $(LDFLAGS) -o $@ tgaplotter.o tgaimage.o ac.cpp $(LIBS)

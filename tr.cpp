@@ -12,8 +12,6 @@
  * 
  * */
 
-using namespace std;    
-
 /**
  * @param напряжение уставки В
  * @return максимальная скорость мм/с
@@ -46,7 +44,7 @@ int main(int argc, char **argv)
 		if(abs(linspd) > spdmax) spdmax = abs(linspd);				
 	}
 
-	cout << spdmax*1000 << " mm/s" << endl;
+	std::cout << spdmax*1000 << " mm/s" << std::endl;
 
 	return 0;
 }

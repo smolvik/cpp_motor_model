@@ -1,40 +1,64 @@
 #include <iostream>
-#include <plotter.h>
 #include <unistd.h>
 #include <math.h>
 #include <sys/time.h>
 #include "driver.h"
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <sys/ioctl.h>
+#include <sys/socket.h>
+#include <fcntl.h>
+#include <pthread.h>
+#include "oscilloscope.h"
 
-using namespace std;
+#define MY_PORT 12345
 
-class Oscilloscope
+pthread_mutex_t vex_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+int start_server(char *hname, int port)
 {
-	XPlotter *plotter;
+	struct sockaddr_in local;
+	int s,rc;
+	int yes = 1;	
 	
-public:	
-	Oscilloscope(double tmax, double xmin, double xmax)
-	{
-		PlotterParams params;	
-		params.setplparam("BITMAPSIZE", (char*)"400x300");
-		params.setplparam("USE_DOUBLE_BUFFERING", (char*)"yes");		
-		
-		plotter = new XPlotter {cin, cout, cerr, params};
-		plotter->openpl();
-		
-		plotter->fspace(0.0, xmin, tmax, xmax);
-		plotter->flinewidth(0.01);    
-		plotter->pencolorname("green");
-		plotter->bgcolorname("black");
-		plotter->erase();
+	bzero(&local, sizeof(local));
+	local.sin_family = AF_INET;
+	local.sin_port = htons(port);	
+	
+	if(hname != 0){
+		inet_aton(hname, &local.sin_addr);
+	}else{
+		local.sin_addr.s_addr = htonl(INADDR_ANY);
 	}
 	
-	~Oscilloscope()
+	
+	s = socket(AF_INET, SOCK_DGRAM, 0);
+	
+	if(s <0)
 	{
-		delete plotter;
+		perror("socket error");
+		exit(1);		
 	}
+	
+	//fcntl(s, F_SETFL, O_NONBLOCK); 
+	
 
-
-};
+	if ( setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1 )
+	{
+		perror("setsockopt");
+		exit(1);				
+	}	
+	
+	rc = bind(s, (struct sockaddr*) &local, sizeof(struct sockaddr_in));
+	if(rc < 0)
+	{
+		perror("bind error");
+		exit(1);				
+	}
+	
+	return s;
+	
+}
 
 double get_ticks()
 {
@@ -47,36 +71,25 @@ int wndsz = 0;
 double *wndbuf;
 double *wndbuf2;
 
-void update_screen(int j, XPlotter &plotter, double dt)
+void* getref_proc(void *v)
 {
-	plotter.erase();
+	int sfd = start_server(0, MY_PORT);
 
-	int k = j;
-	double x = 0.0;
-	double dx = dt;
-	plotter.pencolorname("green");
-	for(int i = 0; i < wndsz-1; i++){		
-		plotter.fmove(x, wndbuf[j]);
-		plotter.fline(x, wndbuf[j], x+dx, wndbuf[(j+1)%wndsz]);
-		
-		j = (j+1)%wndsz;
-		x += dx;
-	}
+	char mes[256];
+	int msz;
+	struct sockaddr_in ca;	
 	
-	/*
-	j = k;
-	x = 0.0;
-	plotter.pencolorname("red");
-	for(int i = 0; i < wndsz-1; i++){		
-		plotter.fmove(x, wndbuf2[j]);
-		plotter.fline(x, wndbuf2[j], x+dx, wndbuf2[(j+1)%wndsz]);
-		
-		j = (j+1)%wndsz;
-		x += dx;
+	for(;;){
+		socklen_t n = sizeof(struct sockaddr_in);		
+		if((msz = recvfrom(sfd, mes, 256, 0, (sockaddr*)&ca, &n))>0){
+			mes[msz] = 0;
+			double x = atof(mes);
+			
+			pthread_mutex_lock(&vex_mutex);
+			*(double*)v = x;
+			pthread_mutex_unlock(&vex_mutex);
+		}
 	}
-	*/	
-
-	plotter.flushpl();	
 }
 
 int main ()
@@ -85,68 +98,47 @@ int main ()
 	double tmax = 1;
 	double freq = 1;
 	int nskip = 100;
-	wndsz = tmax/dtsim/nskip;
+	double vex = 0.0;
+	double vex_thr = 0.0;
 	
-	cout << wndsz << endl;
+	Oscilloscope oscill(tmax, dtsim*nskip, -10, 10);
+	
+	pthread_t  sthr_id;
+	pthread_create(&sthr_id, 0, &getref_proc, &vex_thr);
 	
 	Driver driver(dtsim);
 	
-	wndbuf = new double[wndsz]();
-	wndbuf2 = new double[wndsz]();
-	
-	// set a Plotter parameter
-	PlotterParams params;	
-	
-	params.setplparam("BITMAPSIZE", (char*)"400x300");
-	params.setplparam("USE_DOUBLE_BUFFERING", (char*)"yes");
-	
-	XPlotter plotter(cin, cout, cerr, params);
-	if (plotter.openpl () < 0)                  // open Plotter
-	{
-		cerr << "Couldn't open Plotter\n";
-		return 1;
-	}
-
-	plotter.fspace(0.0, -10.0, tmax, 10.0);
-	plotter.flinewidth(0.01);    
-	plotter.pencolorname("green");
-	plotter.bgcolorname("black");
-	plotter.erase();
-	
 	double tsim = get_ticks();
-	int wi = 0;
+
 	int loop = 0;
-	double vex = 0.0;
 	int fscr = 0;
 
 	while(1)
-	{
+	{	
 		while(get_ticks() > tsim){
-			vex = 3*sin(2*M_PI*freq*tsim);
+			//vex = 3*sin(2*M_PI*freq*tsim);
 			//double vex = sign(cos(2*M_PI*freq*tsim));
+			if(0 == pthread_mutex_trylock(&vex_mutex)){
+				vex = vex_thr;
+				pthread_mutex_unlock(&vex_mutex);
+			}
+
 			Vec3d vs = driver(vex);
 
 			tsim += dtsim;
-			
-			if(++loop == nskip){
-				wndbuf2[wi] = 1.57*vex; // volts to mm
-				wndbuf[wi] = 1000*vs.x;	// get mm		
-				wi = (wi+1)%wndsz;			
+
+			if(++loop == nskip){			
+				oscill.update_buffer(1000*vs.x);
 				loop = 0;
 				fscr = 1;
-			}
-			
+			}			
 		}
-		
+
 		if(fscr){
 			fscr = 0;
-			update_screen(wi, plotter, dtsim*nskip);
-		 }
-
+			oscill.update_screen();
+		 }	 
 	}	
-	
-	plotter.closepl();
-
 
    return 0;
 }     
