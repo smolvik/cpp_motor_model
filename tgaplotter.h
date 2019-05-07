@@ -1,5 +1,5 @@
-#ifndef __PLOTTER_H_
-#define __PLOTTER_H_
+#ifndef __TGAPLOTTER_H_
+#define __TGAPLOTTER_H_
 
 #include <iostream>
 #include <math.h>
@@ -12,7 +12,7 @@
  * @brief
  * Класс построителя 2D диаграмм
  */
-class Plotter{
+class TGAPlotter{
 	Vec3d y0;
 	double x0;
 	
@@ -26,8 +26,8 @@ class Plotter{
 	TGAImage *image;
 
 	public:
-	~Plotter();
-	Plotter(const std::string fn, const double xsc, const Vec3d ysc);
+	~TGAPlotter();
+	TGAPlotter(const std::string fn, const double xsc, const Vec3d ysc);
 	void operator() (const Vec3d &y, const double x);
 	void line(int x0, int y0, int x1, int y1, TGAColor color);
 };

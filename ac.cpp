@@ -3,7 +3,7 @@
 #include "tgaimage.h"
 #include "config.h"
 #include "geometry.h"
-#include "plotter.h"
+#include "tgaplotter.h"
 #include "filter.h"
 #include <stdint.h>
 #include <cmath> 
@@ -15,8 +15,6 @@
  * Симуляция отработки гармонического воздействия
  * и частотный анализ первой гармоники
  * */
-
-using namespace std;    
 
 /**
  * @param амплитуда В
@@ -40,7 +38,7 @@ int main(int argc, char **argv)
 
 	double spdmax = 0.0;
 	
-	Plotter plot5("sin.tga", tmax,Vec3d(0.01,0.01,10000));
+	TGAPlotter plot5("sin.tga", tmax,Vec3d(0.01,0.01,10000));
 
 	complex<double> arg = 0;
 	complex<double> c1(0.0, 0.0);
@@ -63,7 +61,7 @@ int main(int argc, char **argv)
 		if(abs(linspd) > spdmax) spdmax = abs(linspd);				
 	}
 
-	cout << fex << " " << 20*log10(std::abs(c2/c1)) << " " << (180/M_PI)*std::arg(c2/c1) << endl;
+	std::cout << fex << " " << 20*log10(std::abs(c2/c1)) << " " << (180/M_PI)*std::arg(c2/c1) << std::endl;
 	//cout << spdmax*1000 << " mm/s" << endl;
 
 	return 0;

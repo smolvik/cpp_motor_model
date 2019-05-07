@@ -2,7 +2,7 @@
 #include <math.h>
 #include "tgaimage.h"
 #include "geometry.h"
-#include "plotter.h"
+#include "tgaplotter.h"
 #include <stdint.h>
 #include "driver.h"
 
@@ -11,8 +11,6 @@
  * Симуляция отработки приводом перекладки
  * 
  * */
-
-using namespace std;    
 
 /**
  * @param напряжение уставки В
@@ -32,7 +30,7 @@ int main(int argc, char **argv)
 
 	double spdmax = 0.0;
 	
-	Plotter plot5("step.tga", tmax,Vec3d(0.05, 0.05, 0.05));
+	TGAPlotter plot5("step.tga", tmax,Vec3d(0.05,0.05,1000));
 
 	for( double t=0.0 ; t<tmax ; t+= dt ){		
 		//double v1 = (t<0.2)?10:0;
@@ -46,7 +44,7 @@ int main(int argc, char **argv)
 		if(abs(linspd) > spdmax) spdmax = abs(linspd);				
 	}
 
-	cout << spdmax*1000 << " mm/s" << endl;
+	std::cout << spdmax*1000 << " mm/s" << std::endl;
 
 	return 0;
 }

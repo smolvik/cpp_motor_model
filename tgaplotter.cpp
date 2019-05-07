@@ -1,6 +1,6 @@
-#include "plotter.h"
+#include "tgaplotter.h"
 
-Plotter::Plotter(const std::string fn, const double xsc, const Vec3d ysc)
+TGAPlotter::TGAPlotter(const std::string fn, const double xsc, const Vec3d ysc)
 {
 	fname = fn;
 	
@@ -22,7 +22,7 @@ Plotter::Plotter(const std::string fn, const double xsc, const Vec3d ysc)
 	
 }
 
-Plotter::~Plotter()
+TGAPlotter::~TGAPlotter()
 {
 	image->flip_vertically(); // i want to have the origin at the left bottom corner of the image
 	image->write_tga_file(fname.c_str());
@@ -30,7 +30,7 @@ Plotter::~Plotter()
 	delete image;
 }
 
-void Plotter::line(int x0, int y0, int x1, int y1, TGAColor color) 
+void TGAPlotter::line(int x0, int y0, int x1, int y1, TGAColor color) 
 {
 	if(abs(y1-y0)<=abs(x1-x0)){
 	
@@ -71,7 +71,7 @@ void Plotter::line(int x0, int y0, int x1, int y1, TGAColor color)
 	}		
 }
 
-void Plotter::operator() (const Vec3d &y, const double x){
+void TGAPlotter::operator() (const Vec3d &y, const double x){
 	//std::cout << x << '\t' << y.x << '\t' << y.y <<'\t' << y.z << std::endl;
 
 	//double sc[3] = {50000,1,0.2};
