@@ -24,7 +24,7 @@
 //#define KP_POS 6000
 
 /**@param ограничение для регулятора тока */
-#define MAXQCURRENT 2000
+#define MAXQCURRENT 3000
 
 /**@param ограничение для регулятора скорости об/мин */
 #define MAXSPEED 10000

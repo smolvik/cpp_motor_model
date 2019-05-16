@@ -13,7 +13,7 @@ public:
 	Delayer(int n){
 		sz = n;
 		idx = 0;
-		wnd = new t[n];
+		wnd = new t[n]();
 	}
 	~Delayer(){
 		delete[] wnd;

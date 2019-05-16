@@ -2,20 +2,21 @@
 #define _FILTER_H
 
 #define RF_A11 1024
-#define RF_A12 -1990
-#define RF_A13 973
+#define RF_A12 -1811
+#define RF_A13 800
 
-#define RF_B11 258212
-#define RF_B12 -509394
-#define RF_B13 252969
+#define RF_B11 246356
+#define RF_B12 -463631
+#define RF_B13 220522
 
 #define RF_A21 1024
-#define RF_A22 -1930
-#define RF_A23 922
+#define RF_A22 -1993
+#define RF_A23 975
 
-#define RF_B21 254935
-#define RF_B22 -493957
-#define RF_B23 243139
+#define RF_B21 259439
+#define RF_B22 -510181
+#define RF_B23 252266
+
 
 #define RF_SHIFTA 10
 #define RF_SHIFTB 18
@@ -51,9 +52,9 @@ public:
 
 /**
  * @brief
- * Цифровой режекторный фильтр
+ * Цифровой фильтр 2 порядка
  */
-class RejFilter{
+class DigFilter2{
 	int32_t x1;
 	int32_t x2;
 	int32_t y1;
@@ -66,19 +67,51 @@ class RejFilter{
 	int32_t b2;
 	int32_t b3;
 	
+	int32_t shiftA;
+	int32_t shiftB;
+
 public:
-	RejFilter(int32_t _a2, int32_t _a3, int32_t _b1, int32_t _b2, int32_t _b3):x1(0),x2(0),y1(0),y2(0),
-	a2(_a2), a3(_a3), b1(_b1), b2(_b2), b3(_b3){}
-	
+	DigFilter2(int32_t _a2, int32_t _a3, int32_t _b1, int32_t _b2, int32_t _b3, int32_t sA, int32_t sB):x1(0),x2(0),y1(0),y2(0),
+	a2(_a2), a3(_a3), b1(_b1), b2(_b2), b3(_b3), shiftA(sA), shiftB(sB){}
+
 	int32_t operator ()(int32_t x)
 	{
-		int32_t y = (-a2*y1 - a3*y2 + b1*x + b2*x1 + b3*x2) >> RF_SHIFTA;
+		int32_t y = (-a2*y1 - a3*y2 + b1*x + b2*x1 + b3*x2) >> shiftA;
 		x2 = x1; x1 = x;
 		y2 = y1; y1 = y;		
 		
-		return y >> (RF_SHIFTB - RF_SHIFTA);
+		return y >> (shiftB - shiftA);
 	}		
 };
 
+/**
+ * @brief
+ * Цифровой фильтр 1 порядка
+ */
+class DigFilter1{
+	int32_t x1;
+	int32_t y1;
+
+	int32_t a2;
+
+	int32_t b1;
+	int32_t b2;
+	
+	int32_t shiftA;
+	int32_t shiftB;
+
+public:
+	DigFilter1(int32_t _a2, int32_t _b1, int32_t _b2, int32_t sA, int32_t sB):x1(0), y1(0),
+	a2(_a2), b1(_b1), b2(_b2), shiftA(sA), shiftB(sB){}
+
+	int32_t operator ()(int32_t x)
+	{
+		int32_t y = (-a2*y1 + b1*x + b2*x1) >> shiftA;
+		x1 = x;		
+		y1 = y;		
+		
+		return y >> (shiftB - shiftA);
+	}		
+};
 
 #endif

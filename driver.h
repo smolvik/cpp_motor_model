@@ -36,11 +36,10 @@ class Driver{
 
 	int32_t ns;
 
+public:
 	MotorReducer *motor;	
 	Reducer *reducer;
-	VectorController *controller;
-
-public:
+	VectorControllerAnt *controller;
 
 	
 	/**
@@ -57,7 +56,7 @@ public:
 
 		reducer = new Reducer {dt};
 		motor = new MotorReducer {dt};
-		controller = new VectorController;
+		controller = new VectorControllerAnt;
 		uposrc = new fosys {20e3*0.01e-6, dt};
 
 		mcu_delv = new Delayer<Vec3d> {5}; //20us

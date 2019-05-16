@@ -3,12 +3,12 @@ CPPFLAGS     = -Wall -g -O0
 LDFLAGS      = 	
 LIBS         = -lm
 
-all: ac tr sim
+all: ac tr sim test
 
 HEADERS := $(wildcard *.h)
 
-tst:
-	 @echo $(HEADERS)
+test: tgaplotter.o tgaimage.o test.cpp $(HEADERS)
+	$(SYSCONF_LINK) -Wall $(LDFLAGS) -o $@ tgaplotter.o tgaimage.o test.cpp $(LIBS)
 
 sim: sim.cpp $(HEADERS)
 	$(SYSCONF_LINK) $(CPPFLAGS) -o sim sim.cpp -lplotter -lXaw -lXmu -lXt -lSM -lICE -lXext -lX11 -lpng -lz -lm -lpthread

@@ -1,3 +1,9 @@
+/** @file 
+ * Пример использования класса Driver.
+ * Симуляция работы привода в реальном времени
+ * 
+ * */
+
 #include <iostream>
 #include <unistd.h>
 #include <math.h>
@@ -96,7 +102,6 @@ int main ()
 {
 	double dtsim = 4e-6;
 	double tmax = 1;
-	double freq = 1;
 	int nskip = 100;
 	double vex = 0.0;
 	double vex_thr = 0.0;
