@@ -96,7 +96,7 @@ class DigFilter1{
 
 	int32_t b1;
 	int32_t b2;
-	
+
 	int32_t shiftA;
 	int32_t shiftB;
 
@@ -109,7 +109,7 @@ public:
 		int32_t y = (-a2*y1 + b1*x + b2*x1) >> shiftA;
 		x1 = x;		
 		y1 = y;		
-		
+
 		return y >> (shiftB - shiftA);
 	}		
 };

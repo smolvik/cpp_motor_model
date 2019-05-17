@@ -69,7 +69,4 @@ const double K_VTRN = 640.0;
 /** @param Напряжение питания инвертора В*/
 const double UPWR = 57;
 
-/* Включение корр. фильтра */
-#define CFG_CORFLTEN
-
 #endif

@@ -18,18 +18,24 @@
 //#define KP_SPD 4000
 
 /**@param Интегральная составляющая регулятора положения */
-#define KI_POS 50
+#define KI_POS 0
 /**@param Пропорциональная составляющая регулятора положения */
-#define KP_POS 14000
+#define KP_POS 17000
 //#define KP_POS 6000
 
 /**@param ограничение для регулятора тока */
 #define MAXQCURRENT 3000
 
 /**@param ограничение для регулятора скорости об/мин */
-#define MAXSPEED 10000
+#define MAXSPEED 6000
 
 /**@param ограничение скважности для ШИМ [0-512] */
 #define MAXPWM 512
+
+/**@param Включение корр. фильтра Васильева */
+#define CFG_CORFLTEN
+
+/**@param Включение корректора Антона Попова */
+#define CFG_ANTONCORREN
 
 #endif

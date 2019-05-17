@@ -12,8 +12,7 @@
  * Векторный контроллер
  */
 class VectorController{
-	
-protected:
+
 	/**@private*/
 	/* dot product for 3d vectors */
 	int32_t dot3(int32_t *a, int32_t *b)
@@ -263,143 +262,14 @@ protected:
 	int32_t maxqcurrent;
 	/**@private*/
 	Tachometer tacho;
-
-public:
-
-	VectorController()
-	{
-		// init the regulators
-		dreg = new Regulator {KI_DQCUR, KP_DQCUR};
-		qreg = new Regulator {KI_DQCUR, KP_DQCUR};	
-		sreg = new Regulator {KI_SPD, KP_SPD};	
-		preg = new Regulator {KI_POS, KP_POS};
-		
-		rflt1 = new DigFilter2 {RF_A12, RF_A13, RF_B11, RF_B12, RF_B13, RF_SHIFTA ,RF_SHIFTB};
-		rflt2 = new DigFilter2 {RF_A22, RF_A23, RF_B21, RF_B22, RF_B23, RF_SHIFTA ,RF_SHIFTB};
-
-		fCurSat = 0;
-		fSpdSat = 0;
-		fPosSat = 0;
-		phase = 0;
-		tcnt = 0;
-
-		qref = 0;
-
-		maxqcurrent = MAXQCURRENT;
-		
-	}
-	~VectorController()
-	{
-		delete dreg;
-		delete qreg;
-		delete sreg;
-		delete preg;	
-		
-		delete rflt1;
-		delete rflt2;
-	}
-
-	/**
-	 * @brief обновляет состояние
-	 * @param phi угловое положение ротора рад
-	 * @param refpos напряжение уставки контура положения В
-	 * @param iabc фазные токи статора А
-	 * @return вектор фазных напряжений статора В
-	 */
-	Vec3d operator ()(double phi, double refpos, Vec3d iabc)
-	{		
-		int32_t code = encoder(phi);
-		phase = (0+code) & (1024-1);
-
-		// convert abc currents to dq
-		int32_t abc[3];
-		int32_t dq[2];
-		int32_t refspeed = 0;
-
-		abc[0] = adc_curin(iabc.x);
-		abc[1] = adc_curin(iabc.y);
-		abc[2] = adc_curin(iabc.z);
-		abc_to_dq(abc, dq, phase);
-
-		tcnt++;
-		if( (0x0007 & tcnt) == 0){		
-			/* 300 us */
-			//phase = (phase+3) & 1023;
-			int32_t speed = tacho(code);
-
-			/* position regulator */	
-			int32_t xrp = adcposin(refpos);
-
-#ifdef CFG_CORFLTEN
-			xrp = (*rflt1)(xrp);
-			xrp = (*rflt2)(xrp);
-#endif
-
-			xrp = -(71015*xrp-34423*4096)/4096;
-
-			//std::cout << adcposin(refpos) << ":" << xrp << std::endl;
-
-			int32_t pe = xrp - tacho.position();
-			refspeed = (*preg)(pe, fPosSat) >> 12;
-
-			//std::cout << tacho.position() << std::endl;
-
-			fPosSat = 0;
-			if(refspeed > MAXSPEED) {refspeed = MAXSPEED; fPosSat = 1;}
-			if(refspeed < -MAXSPEED) {refspeed = -MAXSPEED; fPosSat = 1;}			
-			//refspeed = refpos;
-			//refspeed = 1000;
-
-			int32_t se = refspeed - speed;			
-
-			/* speed regulator */
-			qref = (*sreg)(se, fSpdSat) >> 12;
-
-			fSpdSat = 0;
-			if(qref > maxqcurrent) {qref = maxqcurrent; fSpdSat = 1;}
-			if(qref < -maxqcurrent) {qref = -maxqcurrent; fSpdSat = 1;}			
-		}
-
-		//qref = adcin(refpos);
-		//qref = 25000;
-
-		// get the errors
-		int32_t ed = 0 - dq[0];
-		int32_t eq = qref - dq[1];
-
-		// currents regulators do its work
-		dq[0] = (*dreg)(ed, fCurSat) >> 2;
-		dq[1] = (*qreg)(eq, fCurSat) >> 2;
-
-		//std::cout << dq[0] << ":" << dq[1] << std::endl;
-
-		//dq[0] = 0;
-		//dq[1] = 1000<<8;
-		
-		fCurSat = svpwm(abc, dq, phase);
-		//fCurSat = sinpwm(abc, dq, phase);
-		
-		//std::cout << phase << std::endl;
-		//std::cout << abc[0] << ":" << abc[1] << ":" << abc[2] << std::endl;
-
-		return Vec3d(pwmout(abc[0]), pwmout(abc[1]), pwmout(abc[2]));
-	}
-};
-
-/**
- * @brief
- * Модифицированный векторный контроллер
- * с адаптивным корректором Антона Попова
- */
-class VectorControllerAnt : public VectorController
-{
+	
 	DigFilter2 *flt1;
 	DigFilter2 *flt2;
 	DigFilter1 *flt3_1;
 	DigFilter1 *flt3_2;
 	DigFilter1 *flt4;
-	DigFilter1 *flt5;
-	
+	DigFilter1 *flt5;	
+
 	int32_t antcor(int32_t x, int32_t wdv)
 	{
 		int32_t num = (*flt3_1)(abs((*flt1)(x))); 
@@ -431,25 +301,53 @@ class VectorControllerAnt : public VectorController
 		return kw;
 	}	
 
-	public:
-	VectorControllerAnt()
+public:
+
+	VectorController()
 	{
+		// init the regulators
+		dreg = new Regulator {KI_DQCUR, KP_DQCUR};
+		qreg = new Regulator {KI_DQCUR, KP_DQCUR};	
+		sreg = new Regulator {KI_SPD, KP_SPD};	
+		preg = new Regulator {KI_POS, KP_POS};
+		
+		rflt1 = new DigFilter2 {RF_A12, RF_A13, RF_B11, RF_B12, RF_B13, RF_SHIFTA ,RF_SHIFTB};
+		rflt2 = new DigFilter2 {RF_A22, RF_A23, RF_B21, RF_B22, RF_B23, RF_SHIFTA ,RF_SHIFTB};
+
+		fCurSat = 0;
+		fSpdSat = 0;
+		fPosSat = 0;
+		phase = 0;
+		tcnt = 0;
+
+		qref = 0;
+
+		maxqcurrent = MAXQCURRENT;
+		
 		flt1 = new DigFilter2 {-1819, 821, 0, 81919, -81919, 10, 10+7};
 		flt2 = new DigFilter2 {-2019, 996, 0, 10240, -10240, 10, 10+10};
 		flt3_1 = new DigFilter1 {-1004, 5243, 0, 10, 10+8};
 		flt3_2 = new DigFilter1 {-1004, 5243, 0, 10, 10+8};
 		flt4 = new DigFilter1 {-996, 7282, 0, 10, 10+8};
-		flt5 = new DigFilter1 {-896, 131072, -131072, 10, 10+10};
+		flt5 = new DigFilter1 {-896, 131072, -131072, 10, 10+10};		
+		
 	}
-	
-	~VectorControllerAnt()
+	~VectorController()
 	{
+		delete dreg;
+		delete qreg;
+		delete sreg;
+		delete preg;	
+		
+		delete rflt1;
+		delete rflt2;
+		
 		delete flt1;
 		delete flt2;
 		delete flt3_1;
 		delete flt3_2;
 		delete flt4;		
-		delete flt5;
+		delete flt5;		
 	}
 
 	/**
@@ -463,7 +361,7 @@ class VectorControllerAnt : public VectorController
 	{		
 		int32_t code = encoder(phi);
 		phase = (0+code) & (1024-1);
-
+		
 		// convert abc currents to dq
 		int32_t abc[3];
 		int32_t dq[2];
@@ -483,11 +381,16 @@ class VectorControllerAnt : public VectorController
 
 			/* position regulator */	
 			int32_t xrp = adcposin(refpos);
-			int32_t speed_kw = antcor(xrp, speed);
 
+#ifdef CFG_ANTONCORREN
+			int32_t speed_kw = antcor(xrp, speed);
+#endif
+
+#ifdef CFG_CORFLTEN
 			xrp = (*rflt1)(xrp);
 			xrp = (*rflt2)(xrp);
-
+#endif
+			
 			xrp = -(71015*xrp-34423*4096)/4096;
 
 			//std::cout << adcposin(refpos) << ":" << xrp << std::endl;
@@ -503,8 +406,11 @@ class VectorControllerAnt : public VectorController
 			//refspeed = refpos;
 			//refspeed = 1000;
 
-			//int32_t se = refspeed - speed;			
+#ifdef CFG_ANTONCORREN
 			int32_t se = refspeed - speed_kw;
+#else
+			int32_t se = refspeed - speed;
+#endif
 
 			/* speed regulator */
 			qref = (*sreg)(se, fSpdSat) >> 12;
