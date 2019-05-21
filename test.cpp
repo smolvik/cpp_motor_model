@@ -41,11 +41,11 @@ int32_t antcor(int32_t x, int32_t wdv)
 	}
 
 	//cout << zn << endl;
-	//return zn;
-
-	return kw;
+	return zn;
+	//return kw;
+	//return pf;
 }
-
+/*
 int main(int argc, char **argv)
 {
 	double dt = 4e-6;
@@ -81,37 +81,49 @@ int main(int argc, char **argv)
 
 	return 0;
 }
+*/
 
-/*
+
 int main(int argc, char **argv)
 {
 	double dt = 4e-6;
 	double tmax = 1;
-	double aex = 1000;
-	double fex = 100;
+	double aex = 0;
+	double fex = 10;
 	int cnt = 0;
 	double v1 = 0;
 	double v2 = 0;
 	
-	DigFilter2 flt(-1819, 821, 0, 83886, -83886);
+	aex = atof(argv[1]);
+	fex = atof(argv[2]);	
 	
-	TGAPlotter plot5("step.tga", tmax,Vec3d(3000,3000,1000));
+	//DigFilter2 flt1(RF_A12, RF_A13, RF_B11, RF_B12, RF_B13, RF_SHIFTA ,RF_SHIFTB);
+	//DigFilter2 flt2(RF_A22, RF_A23, RF_B21, RF_B22, RF_B23, RF_SHIFTA ,RF_SHIFTB);
+	//RejFilter flt1(38.4, 0.952, 0.57, 1/320e-6);
+	//RejFilter flt2(58.7, 0.781, 0.45, 1/320e-6);
+	RejFilter flt1(35, 0.7, 0.85, 1/320e-6);
+	RejFilter flt2(35, 0.7, 0.4, 1/320e-6);
+	
+	TGAPlotter plot5("step.tga", tmax,Vec3d(5000,5000,5000));
 
 	for( double t=0.0 ; t<tmax ; t+= dt ){		
 		//v1 = aex;
-		//v1 = (t<0.2)?10:0;
-		v1 = aex*sin(2*M_PI*fex*t);
-		
+		v1 = (t<0.2)?0:aex;
+		//v1 = aex*sin(2*M_PI*fex*t);
+		//v1 = aex*sign(sin(2*M_PI*5*t));
+
 		// 3000 Hz
-		if(0==(cnt++%80)) v2 = flt(v1);
-		
+		//if(0==(cnt++%80)) v2 = flt2(v1);
+		if(0==(cnt++%80)) v2 = flt2(flt1(v1));
+		//if(0==(cnt++%80)) v2 = antcor(v1,1000);
+
 		//cout << vs  << endl;
 		plot5(Vec3d(v1, v2, 0), t);
 	}
 
 	return 0;
 }
-*/
+
 /*
 int main(int argc, char **argv)
 {
@@ -130,6 +142,8 @@ int main(int argc, char **argv)
 	DigFilter1 flt3(-1004, 5243, 0, 10, 10+8);
 	DigFilter1 flt4(-996, 7282, 0, 10, 10+8);
 	DigFilter1 flt5(-896, 131072, -131072, 10, 10+10);
+	RejFilter rjflt1(38.4, 0.952, 0.57, 1/320e-6);
+	RejFilter rjflt2(58.7, 0.781, 0.45, 1/320e-6);
 
 	TGAPlotter plot5("sin.tga", tmax,Vec3d(5000,5000,5000));
 
@@ -144,11 +158,8 @@ int main(int argc, char **argv)
 		double v1 = aex*sin(2*M_PI*fex*t);
 
 		//if(0==(cnt++%80)) cout << flt3(flt1(v1)) <<":" << flt3(flt2(v1)) << endl;
-		if(0==(cnt++%80)) {
-			vs = antcor(v1,1000);
-			cout << vs << endl;
-		}
-		//if(0==(cnt++%80)) vs = flt3(v1);
+		//if(0==(cnt++%80)) vs = antcor(v1,1000);
+		if(0==(cnt++%80)) vs = rjflt2(v1);
 		
 		c1 += v1*exp(arg);
 		c2 += vs*exp(arg);		

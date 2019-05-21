@@ -29,4 +29,4 @@ doc:
 	doxygen
 
 clean:
-	-rm -f *.tga *.o tr ac sim
+	-rm -f *.tga *.o tr ac sim test

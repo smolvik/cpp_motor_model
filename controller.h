@@ -239,9 +239,7 @@ class VectorController{
 	/**@private*/
 	Regulator *preg;
 	/**@private*/
-	DigFilter2 *rflt1;
-	/**@private*/
-	DigFilter2 *rflt2;
+	RejFilter *rflt1;
 	/**@private*/
 	double curr_mag;
 	/**@private*/
@@ -296,9 +294,9 @@ class VectorController{
 		}
 
 		//cout << zn << endl;
-		//return zn;
+		return zn;
 
-		return kw;
+		//return kw;
 	}	
 
 public:
@@ -310,9 +308,8 @@ public:
 		qreg = new Regulator {KI_DQCUR, KP_DQCUR};	
 		sreg = new Regulator {KI_SPD, KP_SPD};	
 		preg = new Regulator {KI_POS, KP_POS};
-		
-		rflt1 = new DigFilter2 {RF_A12, RF_A13, RF_B11, RF_B12, RF_B13, RF_SHIFTA ,RF_SHIFTB};
-		rflt2 = new DigFilter2 {RF_A22, RF_A23, RF_B21, RF_B22, RF_B23, RF_SHIFTA ,RF_SHIFTB};
+
+		rflt1 = new RejFilter {35, 0.7, 0.85, 1/320e-6};
 
 		fCurSat = 0;
 		fSpdSat = 0;
@@ -340,7 +337,6 @@ public:
 		delete preg;	
 		
 		delete rflt1;
-		delete rflt2;
 		
 		delete flt1;
 		delete flt2;
@@ -375,26 +371,22 @@ public:
 		tcnt++;
 		if( (0x0007 & tcnt) == 0){		
 			/* 300 us */
-		
+
 			//phase = (phase+3) & 1023;
 			int32_t speed = tacho(code);
+			const int32_t xrp0 = 1986;
+			int32_t xrp = adcposin(refpos)-xrp0;
 
-			/* position regulator */	
-			int32_t xrp = adcposin(refpos);
+			/* prefilter */
+			if(antcor(xrp, speed)>7) xrp = (*rflt1)(xrp,410);
+			else xrp = (*rflt1)(xrp,870);			
 
-#ifdef CFG_ANTONCORREN
-			int32_t speed_kw = antcor(xrp, speed);
-#endif
+			xrp = -(71015*(xrp+xrp0)-34423*4096)/4096;
 
-#ifdef CFG_CORFLTEN
-			xrp = (*rflt1)(xrp);
-			xrp = (*rflt2)(xrp);
-#endif
-			
-			xrp = -(71015*xrp-34423*4096)/4096;
-
+			//std::cout << xrp << std::endl;
 			//std::cout << adcposin(refpos) << ":" << xrp << std::endl;
 
+			/* position regulator */	
 			int32_t pe = xrp - tacho.position();
 			refspeed = (*preg)(pe, fPosSat) >> 12;
 
@@ -405,13 +397,16 @@ public:
 			if(refspeed < -MAXSPEED) {refspeed = -MAXSPEED; fPosSat = 1;}			
 			//refspeed = refpos;
 			//refspeed = 1000;
-
+			
+			int32_t se = refspeed - speed;
+			
+/*
 #ifdef CFG_ANTONCORREN
 			int32_t se = refspeed - speed_kw;
 #else
 			int32_t se = refspeed - speed;
 #endif
-
+*/
 			/* speed regulator */
 			qref = (*sreg)(se, fSpdSat) >> 12;
 
