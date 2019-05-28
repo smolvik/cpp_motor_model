@@ -33,7 +33,8 @@ int main(int argc, char **argv)
 	TGAPlotter plot5("step.tga", tmax,Vec3d(0.05,0.05,0.05));
 
 	for( double t=0.0 ; t<tmax ; t+= dt ){		
-		double v1 = (t<0.2)?0:aex;
+		double n1 = 0.1*sin(2*M_PI*75*t);
+		double v1 = ((t<0.2)?0:aex) + n1;
 		//double v1 = aex;
 		Vec3d vs = driver(v1);
 

@@ -1,25 +1,6 @@
 #ifndef _FILTER_H
 #define _FILTER_H
 
-#define RF_A11 1048576
-#define RF_A12 -2040723
-#define RF_A13 998244
-
-#define RF_B11 265665200
-#define RF_B12 -522425040
-#define RF_B13 258320810
-
-#define RF_A21 1048576
-#define RF_A22 -1854522
-#define RF_A23 818938
-
-#define RF_B21 252268930
-#define RF_B22 -474757680
-#define RF_B23 225814620
-
-#define RF_SHIFTA 20
-#define RF_SHIFTB 28
-
 /**
  * @brief
  * Цифровой усредняющий фильтр
@@ -106,7 +87,7 @@ public:
 		int32_t sha = 20;
 		int32_t shb = sha+8;
 
-		int32_t a1 = round(1.0*pow(2,sha));
+		//int32_t a1 = round(1.0*pow(2,sha));
 		int32_t a2 = round((k1*(1+k2))*pow(2,sha));
 		int32_t a3 = round(k2*pow(2,sha));
 

@@ -241,6 +241,8 @@ class VectorController{
 	/**@private*/
 	RejFilter *rflt1;
 	/**@private*/
+	RejFilter *rflt2;
+	/**@private*/
 	double curr_mag;
 	/**@private*/
 	double curr_ang;
@@ -310,6 +312,7 @@ public:
 		preg = new Regulator {KI_POS, KP_POS};
 
 		rflt1 = new RejFilter {35, 0.7, 0.85, 1/320e-6};
+		rflt2 = new RejFilter {75, 0.9, 0.7, 1/320e-6};
 
 		fCurSat = 0;
 		fSpdSat = 0;
@@ -337,6 +340,7 @@ public:
 		delete preg;	
 		
 		delete rflt1;
+		delete rflt2;
 		
 		delete flt1;
 		delete flt2;
@@ -374,12 +378,16 @@ public:
 
 			//phase = (phase+3) & 1023;
 			int32_t speed = tacho(code);
+
 			const int32_t xrp0 = 1986;
 			int32_t xrp = adcposin(refpos)-xrp0;
 
 			/* prefilter */
-			if(antcor(xrp, speed)>7) xrp = (*rflt1)(xrp,410);
-			else xrp = (*rflt1)(xrp,870);			
+			//xrp = (*rflt2)(xrp);
+			int32_t frp = antcor(xrp, speed);
+			//if((frp>8) && (frp<25)) xrp = (*rflt1)(xrp,500);
+			if(frp>8) xrp = (*rflt1)(xrp,400);
+			else xrp = (*rflt1)(xrp,850);
 
 			xrp = -(71015*(xrp+xrp0)-34423*4096)/4096;
 
@@ -400,13 +408,6 @@ public:
 			
 			int32_t se = refspeed - speed;
 			
-/*
-#ifdef CFG_ANTONCORREN
-			int32_t se = refspeed - speed_kw;
-#else
-			int32_t se = refspeed - speed;
-#endif
-*/
 			/* speed regulator */
 			qref = (*sreg)(se, fSpdSat) >> 12;
 

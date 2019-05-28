@@ -13,4 +13,4 @@ plot 'freq_resp.dat' using 1:2 w line, -3, -10
 
 set title 'ФЧХ'
 set ylabel 'градусы'
-plot 'freq_resp.dat' using 1:3 w line, -90, 90
+plot 'freq_resp.dat' using 1:3 w line, -40
