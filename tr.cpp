@@ -22,18 +22,20 @@ int main(int argc, char **argv)
 	double tmax = 1;
 	double klin = 1.57/1000;
 	double aex = 0.0;
-	
+
 	if(argc < 2) return 0;	
 	aex = atof(argv[1]);
 
 	Driver driver(dt);
 
 	double spdmax = 0.0;
-	
+	double ans = 0.0;
+	double fns = 5;
+
 	TGAPlotter plot5("step.tga", tmax,Vec3d(0.05,0.05,0.05));
 
 	for( double t=0.0 ; t<tmax ; t+= dt ){		
-		double n1 = 0.1*sin(2*M_PI*75*t);
+		double n1 = ans*sin(2*M_PI*fns*t) + ans*sin(2*M_PI*50*t);
 		double v1 = ((t<0.2)?0:aex) + n1;
 		//double v1 = aex;
 		Vec3d vs = driver(v1);

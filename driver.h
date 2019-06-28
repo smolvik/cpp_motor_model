@@ -99,6 +99,12 @@ public:
 		/* 40 us sampler */
 		if(0==(ccnt++%ns)) (vabc = (*controller)(del_phi, del_pos, del_iabc));		
 		
+		/* getting phase voltages */
+		double vab = vabc.x - vabc.y;
+		double vbc = vabc.y - vabc.z;
+		double vca = vabc.z - vabc.x;		
+		vabc = Vec3d((2.0*vab+vbc)/3.0, (2.0*vbc+vca)/3.0, (2.0*vca+vab)/3.0);		
+		
 		return reducer->getstate();
 	}
 

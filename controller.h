@@ -283,7 +283,7 @@ class VectorController{
 		int32_t pf = abs(100*(*flt5)(x));
 
 		int32_t kw = 0;
-
+		
 		if(pf == 0) {
 			kw = wdv<<1;
 		}
@@ -295,10 +295,10 @@ class VectorController{
 			else kw = wdv<<1;
 		}
 
-		//cout << zn << endl;
-		return zn;
-
-		//return kw;
+		//if(zn) cout << zn << endl;
+		
+		//return zn;
+		return kw;
 	}	
 
 public:
@@ -311,8 +311,11 @@ public:
 		sreg = new Regulator {KI_SPD, KP_SPD};	
 		preg = new Regulator {KI_POS, KP_POS};
 
-		rflt1 = new RejFilter {35, 0.7, 0.85, 1/320e-6};
-		rflt2 = new RejFilter {75, 0.9, 0.7, 1/320e-6};
+		//rflt1 = new RejFilter {35, 0.7, 0.85, 1/320e-6};
+		//rflt2 = new RejFilter {75, 0.9, 0.7, 1/320e-6};
+		
+		rflt1 = new RejFilter {38.4, 0.952, 0.57, 1/320e-6};
+		rflt2 = new RejFilter {58.7, 0.781, 0.45, 1/320e-6};
 
 		fCurSat = 0;
 		fSpdSat = 0;
@@ -383,11 +386,15 @@ public:
 			int32_t xrp = adcposin(refpos)-xrp0;
 
 			/* prefilter */
-			//xrp = (*rflt2)(xrp);
+			/*
 			int32_t frp = antcor(xrp, speed);
-			//if((frp>8) && (frp<25)) xrp = (*rflt1)(xrp,500);
 			if(frp>8) xrp = (*rflt1)(xrp,400);
 			else xrp = (*rflt1)(xrp,850);
+			*/
+						
+			int32_t kw_speed = antcor(xrp, speed);
+			xrp = (*rflt1)(xrp);
+			xrp = (*rflt2)(xrp);
 
 			xrp = -(71015*(xrp+xrp0)-34423*4096)/4096;
 
@@ -397,6 +404,8 @@ public:
 			/* position regulator */	
 			int32_t pe = xrp - tacho.position();
 			refspeed = (*preg)(pe, fPosSat) >> 12;
+			
+			//int32_t kw_speed = antcor(pe, speed);
 
 			//std::cout << tacho.position() << std::endl;
 
@@ -406,7 +415,8 @@ public:
 			//refspeed = refpos;
 			//refspeed = 1000;
 			
-			int32_t se = refspeed - speed;
+			//int32_t se = refspeed - speed;
+			int32_t se = refspeed - kw_speed;
 			
 			/* speed regulator */
 			qref = (*sreg)(se, fSpdSat) >> 12;

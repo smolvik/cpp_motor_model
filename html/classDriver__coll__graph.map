@@ -1,0 +1,6 @@
+<map id="Driver" name="Driver">
+<area shape="rect" id="node2" href="$classMotorReducer.html" title="Синхронный электродвигатель с постоянными магнитами для использования с редуктором ..." alt="" coords="5,81,109,108"/>
+<area shape="rect" id="node3" href="$classMotor.html" title="Синхронный электродвигатель с постоянными магнитами " alt="" coords="30,5,85,32"/>
+<area shape="rect" id="node4" href="$classVectorController.html" title="Векторный контроллер " alt="" coords="134,81,250,108"/>
+<area shape="rect" id="node5" href="$classReducer.html" title="Линейный редуктор " alt="" coords="274,81,345,108"/>
+</map>

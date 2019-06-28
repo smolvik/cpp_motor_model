@@ -4,7 +4,7 @@ rm freq_resp.dat
 
 AMPL=1
 
-for f in {1..100}
+for f in {1..150}
 do
 	echo $f
 	./ac $AMPL $f >> freq_resp.dat

@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>9Б655М симулятор: Файл sim.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">9Б655М симулятор
+   &#160;<span id="projectnumber">1.0</span>
+   </div>
+   <div id="projectbrief">Программный симулятор системы управления электроприводом 9Б655М</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.8.13 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Поиск');
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Поиск');
+  $(document).ready(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+</div><!-- top -->
+<div class="header">
+  <div class="summary">
+<a href="#define-members">Макросы</a> &#124;
+<a href="#func-members">Функции</a> &#124;
+<a href="#var-members">Переменные</a>  </div>
+  <div class="headertitle">
+<div class="title">Файл sim.cpp</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &lt;iostream&gt;</code><br />
+<code>#include &lt;unistd.h&gt;</code><br />
+<code>#include &lt;math.h&gt;</code><br />
+<code>#include &lt;sys/time.h&gt;</code><br />
+<code>#include &quot;driver.h&quot;</code><br />
+<code>#include &lt;netinet/in.h&gt;</code><br />
+<code>#include &lt;arpa/inet.h&gt;</code><br />
+<code>#include &lt;sys/ioctl.h&gt;</code><br />
+<code>#include &lt;sys/socket.h&gt;</code><br />
+<code>#include &lt;fcntl.h&gt;</code><br />
+<code>#include &lt;pthread.h&gt;</code><br />
+<code>#include &quot;oscilloscope.h&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Граф включаемых заголовочных файлов для sim.cpp:</div>
+<div class="dyncontent">
+<div class="center"><img src="sim_8cpp__incl.png" border="0" usemap="#sim_8cpp" alt=""/></div>
+<map name="sim_8cpp" id="sim_8cpp">
+<area shape="rect" id="node6" href="driver_8h_source.html" title="driver.h" alt="" coords="530,80,595,107"/>
+<area shape="rect" id="node32" href="oscilloscope_8h_source.html" title="oscilloscope.h" alt="" coords="1251,80,1357,107"/>
+<area shape="rect" id="node7" href="tgaimage_8h_source.html" title="tgaimage.h" alt="" coords="1126,155,1213,181"/>
+<area shape="rect" id="node9" href="config_8h.html" title="config.h" alt="" coords="257,229,325,256"/>
+<area shape="rect" id="node10" href="geometry_8h_source.html" title="geometry.h" alt="" coords="94,229,181,256"/>
+<area shape="rect" id="node16" href="motor_8h_source.html" title="motor.h" alt="" coords="395,155,461,181"/>
+<area shape="rect" id="node17" href="delayer_8h_source.html" title="delayer.h" alt="" coords="451,229,525,256"/>
+<area shape="rect" id="node18" href="reducer_8h_source.html" title="reducer.h" alt="" coords="243,155,319,181"/>
+<area shape="rect" id="node20" href="controller_8h_source.html" title="controller.h" alt="" coords="637,155,723,181"/>
+<area shape="rect" id="node22" href="filter_8h_source.html" title="filter.h" alt="" coords="1013,229,1072,256"/>
+<area shape="rect" id="node25" href="fosys_8h_source.html" title="fosys.h" alt="" coords="154,155,219,181"/>
+<area shape="rect" id="node14" href="cos__tb_8h_source.html" title="cos_tb.h" alt="" coords="253,304,325,331"/>
+<area shape="rect" id="node21" href="gdef_8h.html" title="gdef.h" alt="" coords="651,229,709,256"/>
+<area shape="rect" id="node23" href="tachometer_8h_source.html" title="tachometer.h" alt="" coords="733,229,832,256"/>
+<area shape="rect" id="node24" href="regulator_8h_source.html" title="regulator.h" alt="" coords="856,229,939,256"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Макросы</h2></td></tr>
+<tr class="memitem:a719a4dddb57833b7ec551b888419d85e"><td class="memItemLeft" align="right" valign="top"><a id="a719a4dddb57833b7ec551b888419d85e"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>MY_PORT</b>&#160;&#160;&#160;12345</td></tr>
+<tr class="separator:a719a4dddb57833b7ec551b888419d85e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Функции</h2></td></tr>
+<tr class="memitem:a468e1ee192672cc8da78286d582b6737"><td class="memItemLeft" align="right" valign="top"><a id="a468e1ee192672cc8da78286d582b6737"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>start_server</b> (char *hname, int port)</td></tr>
+<tr class="separator:a468e1ee192672cc8da78286d582b6737"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1985a35083959417848af920be73dbee"><td class="memItemLeft" align="right" valign="top"><a id="a1985a35083959417848af920be73dbee"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>get_ticks</b> ()</td></tr>
+<tr class="separator:a1985a35083959417848af920be73dbee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf4415bae8da0855da52114542fcbf3a"><td class="memItemLeft" align="right" valign="top"><a id="abf4415bae8da0855da52114542fcbf3a"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><b>getref_proc</b> (void *v)</td></tr>
+<tr class="separator:abf4415bae8da0855da52114542fcbf3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memItemLeft" align="right" valign="top"><a id="ae66f6b31b5ad750f1fe042a706a4e3d4"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>main</b> ()</td></tr>
+<tr class="separator:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Переменные</h2></td></tr>
+<tr class="memitem:a3183786d90f591a9e741d08442878e68"><td class="memItemLeft" align="right" valign="top"><a id="a3183786d90f591a9e741d08442878e68"></a>
+pthread_mutex_t&#160;</td><td class="memItemRight" valign="bottom"><b>vex_mutex</b> = PTHREAD_MUTEX_INITIALIZER</td></tr>
+<tr class="separator:a3183786d90f591a9e741d08442878e68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a984e5f20a926a655460014dade1c710b"><td class="memItemLeft" align="right" valign="top"><a id="a984e5f20a926a655460014dade1c710b"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>wndsz</b> = 0</td></tr>
+<tr class="separator:a984e5f20a926a655460014dade1c710b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e9aabcd9ab24c0b2270cb239d17cbc0"><td class="memItemLeft" align="right" valign="top"><a id="a7e9aabcd9ab24c0b2270cb239d17cbc0"></a>
+double *&#160;</td><td class="memItemRight" valign="bottom"><b>wndbuf</b></td></tr>
+<tr class="separator:a7e9aabcd9ab24c0b2270cb239d17cbc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a647d971e9aeb2df0aefe231df77327bb"><td class="memItemLeft" align="right" valign="top"><a id="a647d971e9aeb2df0aefe231df77327bb"></a>
+double *&#160;</td><td class="memItemRight" valign="bottom"><b>wndbuf2</b></td></tr>
+<tr class="separator:a647d971e9aeb2df0aefe231df77327bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
+<div class="textblock"><p>Пример использования класса <a class="el" href="classDriver.html" title="Одногоканальный привод ">Driver</a>. Симуляция работы привода в реальном времени </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Создано системой &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.13
+</small></address>
+</body>
+</html>

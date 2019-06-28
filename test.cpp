@@ -83,19 +83,21 @@ int main(int argc, char **argv)
 }
 */
 
-complex<int32_t> wtbl[8];
+#define NFFT 16
+
+complex<int32_t> wtbl[NFFT];
 
 complex<int32_t> fft(int k, int32_t *x, int n, int is, int d)
 {
-	complex<int32_t> c = 0;	
+	complex<int32_t> c = 0;
 
 	if (n == 1) {
-		int32_t arg = (k<<2) & 7;
-		c = 1000*x[is] + x[is+d]*wtbl[arg];
+		int32_t arg = (k<<(int32_t)log2(NFFT/2)) & (NFFT-1);
+		c = 10000*x[is] + x[is+d]*wtbl[arg];
 	}
 	else {
-		int32_t arg = 7 & (k<<(3-n));
-		c = fft(k, x, n-1, is, d<<1) + (wtbl[arg]*fft(k, x, n-1, is+d, d<<1))/1000;
+		int32_t arg = (k<<((int32_t)log2(NFFT)-n)) & (NFFT-1);
+		c = fft(k, x, n-1, is, d<<1) + wtbl[arg]*(fft(k, x, n-1, is+d, d<<1)/10000);
 	}
 	
 	return c;	
@@ -117,27 +119,62 @@ complex<double> fft(int k, double *x, int n, int is, int d)
 	return c;	
 }
 
+
+union UNI_UARTCWORD
+{
+  uint64_t d64;
+  struct
+  {
+	uint64_t ref1 : 12;
+	uint64_t ref2 : 12;
+	uint64_t ref3 : 12;
+	uint64_t cw_bof3 : 1;
+	uint64_t cw_bof2 : 1;
+	uint64_t cw_bof1 : 1;
+	uint64_t cw_emul : 1;
+	uint64_t cw_pwon : 1;
+	uint64_t cw_cal3 : 1;
+	uint64_t cw_cal2 : 1;
+	uint64_t cw_cal1 : 1;
+	uint64_t cw_gmod : 1;
+	uint64_t cw_res1 : 1;
+	uint64_t cw_res2 : 1;
+	uint64_t cw_res3 : 1;
+	uint64_t crc : 16;
+  }
+  b;
+};
+
 int main(int argc, char **argv)
 {
-	int32_t x[8] = {1,2,3,4,5,6,7,8};
-
-	int nm = 8;
+	int32_t x[NFFT];
+	double xd[NFFT];
+	double ftst = 32;
+	double fs = 5.0*NFFT;
 	
-	for(int i = 0; i < 8; i++){
-		complex<double> arg = -(2*M_PI/8)*i*1i;
-		wtbl[i] = 1000.0*exp(arg);
-		//wtbl[i] = complex<int32_t>( round(1000.0*cos(-(2*M_PI/8)*i)), round(1000.0*sin(-(2*M_PI/8)*i)) );
+	//union UNI_UARTCWORD tu;
+	//printf("%d\n", sizeof(tu));	
+	//return 0;
+	
+	for(int i = 0; i < NFFT; i++){
+		complex<double> arg = -(2*M_PI/NFFT)*i*1i;
+		wtbl[i] = 10000.0*exp(arg);
+		//wtbl[i] = complex<int32_t>( round(1000.0*cos(-(2*M_PI/NFFT)*i)), round(1000.0*sin(-(2*M_PI/NFFT)*i)) );
+		x[i] = round(1000*cos(2*M_PI*ftst*i/fs));
+		xd[i] = 1000*cos(2*M_PI*ftst*i/fs);
 	}
 
-	for(int k = 0; k < nm; k++){
-		complex<int32_t> c = fft(k, x, log2(nm), 0, 1);
-		cout << c << endl;
+	for(int k = 0; k < NFFT; k++){
+		complex<int32_t> c = (fft(k, x, log2(NFFT), 0, 1)+500)/1000;
+		//complex<double> c = fft(k, xd, NFFT, 0, 1);
+		cout << abs(c) << endl;
+		//cout << wtbl[k] << endl;
 	}
 
 	return 0;
 }
-*/
 
+/*
 int main(int argc, char **argv)
 {
 	double dt = 4e-6;
